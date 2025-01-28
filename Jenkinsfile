@@ -10,7 +10,7 @@ pipeline {
         stage('Build Docker App') {
             steps {
                 sh 'pwd'
-                sh 'docker build -t test_app:dev /react/tamhid_dev/'
+                sh 'docker build -t test_app:dev devops/react/tamhid_dev/'
             }
         }
         stage('Run Docker App') {
