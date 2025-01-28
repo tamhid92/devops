@@ -1,11 +1,8 @@
 pipeline {
-    agent any 
-    }
+    agent any
     stages {
-        stage('terraform') {
-            steps {
-                sh 'hostname'
-            }
+        stage('Test') {
+            sh 'hostname'
         }
     }
 }
