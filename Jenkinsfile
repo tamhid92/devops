@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh 'sudo apt-get update'
                 sh 'sudo apt-get dist-upgrade'
-                sh 'sudo apt install ansible'
+                sh 'sudo apt install ansible -y'
             }
         }
         stage('Build Docker App') {
