@@ -5,11 +5,11 @@ pipeline {
             steps {
                 sh 'sudo apt-get update'
                 sh 'sudo apt-get dist-upgrade'
-                sh 'sudo apt install ansible -y'
             }
         }
         stage('Build Docker App') {
             steps {
+                sh 'pwd'
                 sh 'docker build -t test_app:dev /react/tamhid_dev/'
             }
         }
