@@ -5,7 +5,6 @@ pipeline {
             steps {
                 sh 'sudo apt-get update'
                 sh 'sudo apt-get dist-upgrade'
-                sh 'sudo apt-add-repository --yes --update ppa:ansible/ansible'
                 sh 'sudo apt install ansible'
             }
         }
