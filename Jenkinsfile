@@ -3,8 +3,8 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'sudo apt-get update'
-                sh 'sudo apt-get dist-upgrade'
+                sh 'sudo apt-get -y update'
+                sh 'sudo apt-get -y dist-upgrade'
             }
         }
         stage('Build Docker App') {
