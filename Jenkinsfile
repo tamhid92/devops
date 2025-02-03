@@ -5,6 +5,7 @@ pipeline {
             steps {
                 sh 'sudo apt-get update'
                 sh 'sudo apt-get dist-upgrade'
+                sh 'pip install -r requirements.txt'
             }
         }
         stage('Build Docker App') {
