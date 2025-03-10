@@ -1,5 +1,6 @@
 wget
 pymongo
 uuid
-hashlib
-icalender
+icalendar
+psycopg2-binary
+psycopg2
