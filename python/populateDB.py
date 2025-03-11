@@ -12,9 +12,9 @@ def downloadICS():
     url = "https://www.skysports.com/calendars/football/fixtures/teams/manchester-united"
     downloadfile = wget.download(url)
 
-def createUUID(unistr):
-    hex_string = hashlib.md5(unistr.encode("UTF-8")).hexdigest()
-    return str(uuid.UUID(hex=hex_string))
+# def createUUID(unistr):
+#     hex_string = hashlib.md5(unistr.encode("UTF-8")).hexdigest()
+#     return str(uuid.UUID(hex=hex_string))
 
 def populateFixtures():
     matches = []
@@ -34,9 +34,6 @@ def populateFixtures():
                 comp = description.decode("utf-8").split('-')[2]
                 date = cst_localtime.date()
                 time = cst_localtime.time()
-
-                # uuidstring = f"{hometeam}{awayteam}{str(date).replace('-','')}".replace(' ','')
-                # uid = createUUID(uuidstring)
 
                 matchinfo = {
                     "UID"           : uid,
