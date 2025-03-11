@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: fixture
+      POSTGRES_DB: fixtures
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
@@ -21,7 +21,7 @@ services:
 
   manutd_api:
     build: .
-    container_name: flask-api
+    container_name: manutd_api
     depends_on:
       - postgres
     command: ["python", "manutd_api.py"]
