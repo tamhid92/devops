@@ -12,7 +12,7 @@ services:
     ports:
       - "5431:5432"
 
-  populateDB:
+  populatedb:
     build: .
     container_name: populate-db
     depends_on:
