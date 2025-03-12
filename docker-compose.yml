@@ -10,6 +10,8 @@ services:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - "5431:5432"
+    networks:
+      -  docker_network
 
   populatedb:
     build: .
@@ -17,6 +19,8 @@ services:
     depends_on:
       - postgres
     command: ["python", "populateDB.py"]
+    networks:
+      -  docker_network
 
   manutd_api:
     build: .
@@ -26,6 +30,11 @@ services:
     command: ["python", "manutd_api.py"]
     ports:
       - "5000:5000"
+    networks:
+      -  docker_network
 
 volumes:
   postgres-data:
+
+networks:
+  docker_network:

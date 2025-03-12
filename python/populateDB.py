@@ -51,12 +51,12 @@ def populateFixtures():
 
 def populateDB(data):
     conn = psycopg2.connect(
-        dbname="fixture",
+        dbname="fixtures",
         user="postgres",
         password="postgres",
-        host="192.168.117.134",
+        host="postgres",
         port=5431
-)
+    )
     cur = conn.cursor()
 
     cur.execute("""CREATE TABLE IF NOT EXISTS match (
@@ -80,7 +80,9 @@ def populateDB(data):
 
 def main():
     downloadICS()
+    print("Downloaded ICS file")
     matches = populateFixtures()
+    print("Scraped ICS file successfully")
     populateDB(matches)
     os.remove('manchester-united')
 

@@ -3,11 +3,11 @@ import psycopg2
 from datetime import datetime
 
 db_info = """
-    dbname=fixture
+    dbname=fixtures
     user=postgres
     password=postgres
-    host=192.168.117.134
-    port=5431
+    host=postgres
+    port=5432
 """
 today = datetime.today().strftime('%Y-%m-%d')
 print(today)
