@@ -13,7 +13,7 @@ def downloadICS():
     downloadfile = wget.download(url)
 
 # def createUUID(unistr):
-#     hex_string = hashlib.md5(unistr.encode("UTF-8")).hexdigest()
+#     hex_string = hashlib.md5(unistr.encodecle"UTF-8")).hexdigest()
 #     return str(uuid.UUID(hex=hex_string))
 
 def populateFixtures():
