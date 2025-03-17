@@ -18,3 +18,5 @@
       - docker
       - microk8s
       - wget
+    become: yes
+    become_method: sudo
