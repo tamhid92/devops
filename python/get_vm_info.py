@@ -39,11 +39,8 @@ def main():
     vm_info = get_vm_info(vms, args.node_name)
     
     ini_data = generate_inv_file(vm_info['ip'])
-    try:
-        with open("../ansible/hosts.ini", "w+") as file:
-            file.write(ini_data)
-    except:
-        print("File already exists")
+    with open("../ansible/hosts.ini", "w+") as file:
+        file.write(ini_data)
 
 if __name__ == '__main__':
     main()
