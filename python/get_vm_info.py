@@ -17,6 +17,7 @@ def get_vm_info(resp, node_name):
                 "name"  : vm['path'].split("\\")[-1].split(".")[0],
                 "ip"    : ip_resp['ip']
             }
+    print(vm_info)
     return vm_info
 
 def generate_inv_file(ip_addr):
