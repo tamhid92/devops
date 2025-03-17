@@ -25,8 +25,8 @@ pipeline {
             steps{
                 sh '''
                     pwd
-                    cd /home/tamhid/
-                    ls
+                    whoami
+                    ansible-playbook ansible/main.yml -i /home/tamhid/hosts.ini
                 '''
             }
             post {
