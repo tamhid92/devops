@@ -13,13 +13,13 @@ pipeline {
                 }
             }
         }
-    }
-    stage('Run Ansible') {
-        agent {label 'wsl'}
-        steps{
-            sh '''
-                pwd
-            '''
+        stage('Run Ansible') {
+            agent {label 'wsl'}
+            steps{
+                sh '''
+                    pwd
+                '''
+            }
         }
     }
     post {
