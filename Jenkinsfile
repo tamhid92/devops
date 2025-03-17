@@ -1,5 +1,5 @@
 pipeline {
-    agent {'windows'}
+    agent {label 'windows'}
     stages {
         stage('Python Script to build inventory file') {
             steps{
