@@ -5,6 +5,7 @@ import os
 parser = argparse.ArgumentParser(description ='VMWare VM Name')
 uname = os.environ.get("api_user")
 pwd = os.environ.get("api_pass")
+JENKINS_HOME = os.environ.get("JENKINS_HOME")
 parser.add_argument('node_name', type=str, help="Node Name")
 args = parser.parse_args()
 
@@ -39,8 +40,11 @@ def main():
     vm_info = get_vm_info(vms, args.node_name)
     
     ini_data = generate_inv_file(vm_info['ip'])
-    with open("../ansible/hosts.ini", "w+") as file:
-        file.write(ini_data)
+    try:
+        with open(f"{JENKINS_HOME}\\ansible\\hosts.ini", "w+") as file:
+            file.write(ini_data)
+    except:
+        print("File already exists")
 
 if __name__ == '__main__':
     main()
