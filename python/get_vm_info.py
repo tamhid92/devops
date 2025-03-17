@@ -27,6 +27,7 @@ def generate_inv_file(ip_addr):
 [master:vars]
 ansible_ssh_private_key_file=/home/tamhid/keys/tamhid_key
     """
+    print(ip_addr)
     return ini_data
 
 def main():
