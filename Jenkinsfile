@@ -1,7 +1,8 @@
 pipeline {
-    agent {label 'windows'}
+    agent none
     stages {
         stage('Python Script to build inventory file') {
+            agent {label 'windows'}
             steps{
                 withCredentials([usernamePassword(credentialsId: 'vmware-api', passwordVariable: 'api_pass', usernameVariable: 'api_user')]) {
                     powershell '''
@@ -13,14 +14,12 @@ pipeline {
             }
         }
     }
-    agent {label 'wsl'}
-    stages {
-        stage('Run Ansible') {
-            steps{
-                sh '''
-                    pwd
-                '''
-            }
+    stage('Run Ansible') {
+        agent {label 'wsl'}
+        steps{
+            sh '''
+                pwd
+            '''
         }
     }
     post {
