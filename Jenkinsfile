@@ -6,7 +6,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'vmware-api', passwordVariable: 'pass', usernameVariable: 'user')]) {
                     powershell '''
                         echo $env:JENKINS_HOME
-                        python python\\get_vm_info.py $user $pass dev-master
+                        echo ${user} ${pass}
+                        python python\\get_vm_info.py ${user} ${pass} dev-master
                     '''
                 }
             }
