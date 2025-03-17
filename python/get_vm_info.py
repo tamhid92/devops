@@ -5,6 +5,7 @@ import os
 parser = argparse.ArgumentParser(description ='VMWare VM Name')
 uname = os.environ.get("api_user")
 pwd = os.environ.get("api_pass")
+sudo_pass = os.environ.get("sudo_pass")
 JENKINS_HOME = os.environ.get("JENKINS_HOME")
 parser.add_argument('node_name', type=str, help="Node Name")
 args = parser.parse_args()
@@ -29,6 +30,8 @@ def generate_inv_file(ip_addr):
 
 [master:vars]
 ansible_ssh_private_key_file=/home/tamhid/keys/tamhid_key
+ansible_become_method: sudo
+ansible_become_pass: "{sudo_pass}"
     """
     print(ip_addr)
     return ini_data

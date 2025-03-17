@@ -5,12 +5,14 @@ pipeline {
             agent {label 'windows'}
             steps{
                 withCredentials([usernamePassword(credentialsId: 'vmware-api', passwordVariable: 'api_pass', usernameVariable: 'api_user')]) {
-                    powershell '''
-                        echo $env:JENKINS_HOME
-                        python python\\get_vm_info.py dev-master
-                        cd ansible
-                        copy .\\hosts.ini \\\\wsl$\\Ubuntu\\home\\tamhid
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'sudo', passwordVariable: 'sudo_pass', usernameVariable: 'sudo_user')]) {
+                        powershell '''
+                            echo $env:JENKINS_HOME
+                            python python\\get_vm_info.py dev-master
+                            cd ansible
+                            copy .\\hosts.ini \\\\wsl$\\Ubuntu\\home\\tamhid
+                        '''
+                    }
                 }
             }
             post {
@@ -24,15 +26,16 @@ pipeline {
             agent {label 'wsl'}
             steps{
                 sh '''
-                    pwd
-                    whoami
-                    ansible-playbook ansible/main.yml -i /home/tamhid/hosts.ini -K
+                    ansible-playbook ansible/main.yml -i /home/tamhid/hosts.ini
                 '''
             }
             post {
                 always {
                     echo 'Clean WS'
                     deleteDir()
+                    sh '''
+                        rm /home/tamhid/hosts.ini
+                    '''
                 }
             }
         }
