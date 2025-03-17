@@ -26,6 +26,7 @@
     loop:
       - ../python/manutd_api.py
       - ../python/populateDB.py
+      - ../python/requirements.txt
 
   - name: create and deploy docker compose services
     community.docker.docker_compose_v2:
