@@ -7,6 +7,7 @@ pipeline {
                     powershell '''
                         echo $env:JENKINS_HOME
                         python python\\get_vm_info.py dev-master
+                        ls ansible
                     '''
                 }
             }
