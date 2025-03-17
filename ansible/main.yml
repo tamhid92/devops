@@ -16,8 +16,8 @@
       src: "{{ item }}"
       dest: /home/tamhid/docker/
     loop:
-      - docker-compose.yml
-      - dockerfile
+      - ../docker/docker-compose.yml
+      - ../docker/dockerfile
 
   - name: create and deploy docker compose services
     community.docker.docker_compose_v2:
