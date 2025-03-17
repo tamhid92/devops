@@ -1,7 +1,6 @@
 ---
 - name: Configure server
   hosts: all
-  remote_user: root
 
   tasks:
   - name: Upgrade all apt packages
