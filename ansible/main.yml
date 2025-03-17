@@ -13,7 +13,7 @@
 
   - name: Current working dir
     shell: |
-      ls
+      ls /var/lib/jenkins/workspace/devops-pipeline/
     register: output
 
   - name: Print output
