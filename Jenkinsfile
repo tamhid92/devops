@@ -23,10 +23,10 @@ pipeline {
         }
     }
     post {
-        agent{label 'wsl'}
         always {
-            echo 'Clean WS'
-            deleteDir()
+            agent{label 'windows' && label 'wsl'}
+                echo 'Clean WS'
+                deleteDir()
         }
     }
 }
