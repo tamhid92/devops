@@ -17,7 +17,7 @@
     register: output
 
   - name: Print output
-  - debug: msg="{{output.stdout}}"
+    debug: msg="{{output.stdout}}"
 
   - name: create and deploy docker compose services
     community.docker.docker_compose_v2:
