@@ -2,14 +2,14 @@
 - name: Configure server
   hosts: all
   become: yes
-  roles:
-    - docker
+  # roles:
+  #   - docker
 
   tasks:
-  - name: Install Microk8s
-    community.general.snap:
-      name: microk8s
-      classic: true
+  # - name: Install Microk8s
+  #   community.general.snap:
+  #     name: microk8s
+  #     classic: true
 
   - name: Current working dir
     shell: |
@@ -17,9 +17,9 @@
     register: output
 
   - name: Print output
-    debug: "{{output.stdout}}"
+  - debug: msg="{{output.stdout}}"
 
-  # - name: create and deploy docker compose services
-  #   community.docker.docker_compose_v2:
-  #     project_src: 
-  #     files: docker_compose.yml
+  - name: create and deploy docker compose services
+    community.docker.docker_compose_v2:
+      project_src: /var/lib/jenkins/workspace/DevOps Pipeline/docker/.
+      files: docker_compose.yml
