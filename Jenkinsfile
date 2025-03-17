@@ -30,15 +30,15 @@ pipeline {
                     ansible-playbook ansible/main.yml -i /home/tamhid/hosts.ini
                 '''
             }
-            post {
-                always {
-                    echo 'Clean WS'
-                    deleteDir()
-                    sh '''
-                        rm /home/tamhid/hosts.ini
-                    '''
-                }
-            }
+            // post {
+            //     always {
+            //         echo 'Clean WS'
+            //         deleteDir()
+            //         sh '''
+            //             rm /home/tamhid/hosts.ini
+            //         '''
+            //     }
+            // }
         }
     }
 }
