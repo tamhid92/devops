@@ -11,7 +11,11 @@
       name: microk8s
       classic: true
 
-  - name: create and deploy docker compose services
-    community.docker.docker_compose_v2:
-      project_src: ./docker/.
-      files: docker_compose.yml
+  - name: Current working dir
+    shell: |
+      pwd
+
+  # - name: create and deploy docker compose services
+  #   community.docker.docker_compose_v2:
+  #     project_src: 
+  #     files: docker_compose.yml
