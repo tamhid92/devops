@@ -2,10 +2,9 @@
 - name: Configure server
   hosts: all
   become: yes
-  become_method: sudo
   roles:
     - docker
-    
+
   tasks:
   - name: Install Microk8s
     community.general.snap:
