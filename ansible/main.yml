@@ -1,22 +1,64 @@
 ---
 - name: Configure server
   hosts: all
+  become: yes
+  become_method: sudo
 
   tasks:
   - name: Upgrade all apt packages
     apt:
       force_apt_get: yes
       upgrade: dist
-    become: yes
-    become_method: sudo
+
   - name: Install Packages
     apt:
       name: "{{ item }}"
-      state: present
+      state: latest
     loop:
-      - curl
-      - docker
-      - microk8s
       - wget
-    become: yes
-    become_method: sudo
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+
+  - name: Install Microk8s
+    community.general.snap:
+      name: microk8s
+      classic: true
+
+  - name: Add Docker GPG apt Key
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: Add Docker Repository
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu focal stable
+      state: present
+  
+  - name: Add Vault GPG apt Key and Repo
+    ansible.builtin.command: |
+      wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+  - name: Update apt and install docker and Vault
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update_cache: true
+    loop:
+      - docker-ce 
+      - docker-ce-cli 
+      - containerd.io 
+      - docker-buildx-plugin 
+      - docker-compose-plugin
+      - vault
+
+  - name: Install Docker Module for Python
+    pip:
+      name: docker
+
+    
