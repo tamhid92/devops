@@ -1,9 +1,10 @@
 import vm_rest_lib
 import argparse
+import os
 
-parser = argparse.ArgumentParser(description ='VMWare API auth Username and Password')
-parser.add_argument('uname', type=str, help="Username")
-parser.add_argument('pwd', type=str, help="Password")
+parser = argparse.ArgumentParser(description ='VMWare VM Name')
+uname = os.environ.get("api_user")
+pwd = os.environ.get("api_pass")
 parser.add_argument('node_name', type=str, help="Node Name")
 args = parser.parse_args()
 
@@ -33,7 +34,7 @@ ansible_ssh_private_key_file=/home/tamhid/keys/tamhid_key
 
 def main():
 
-    vm_rest_lib.authenticate(args.uname, args.pwd)
+    vm_rest_lib.authenticate(uname, pwd)
     vms = vm_rest_lib.get_vms()
     vm_info = get_vm_info(vms, args.node_name)
     

@@ -3,10 +3,10 @@ pipeline {
     stages {
         stage('Python Script to build inventory file') {
             steps{
-                withCredentials([usernamePassword(credentialsId: 'vmware-api', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                withCredentials([usernamePassword(credentialsId: 'vmware-api', passwordVariable: 'api_pass', usernameVariable: 'api_user')]) {
                     powershell '''
                         echo $env:JENKINS_HOME
-                        python python\\get_vm_info.py $user $pass dev-master
+                        python python\\get_vm_info.py dev-master
                     '''
                 }
             }
