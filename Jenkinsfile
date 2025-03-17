@@ -26,7 +26,7 @@ pipeline {
                 sh '''
                     pwd
                     whoami
-                    ansible-playbook ansible/main.yml -i /home/tamhid/hosts.ini
+                    ansible-playbook ansible/main.yml -i /home/tamhid/hosts.ini -K
                 '''
             }
             post {
