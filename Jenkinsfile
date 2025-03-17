@@ -13,6 +13,16 @@ pipeline {
             }
         }
     }
+    agent {label 'wsl'}
+    stages {
+        stage('Run Ansible') {
+            steps{
+                sh '''
+                    pwd
+                '''
+            }
+        }
+    }
     post {
         always {
             echo 'Clean WS'
