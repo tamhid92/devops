@@ -22,4 +22,4 @@
   - name: create and deploy docker compose services
     community.docker.docker_compose_v2:
       project_src: "/home/tamhid/docker"
-      files: "docker_compose.yml"
+      files: "docker-compose.yml"
