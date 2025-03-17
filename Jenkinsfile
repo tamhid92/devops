@@ -8,8 +8,17 @@ pipeline {
                     powershell '''
                         echo $env:JENKINS_HOME
                         python python\\get_vm_info.py dev-master
-                        ls ansible
+                        cd ansible
+                        copy .\\hosts.ini \\\\wsl$\\Ubuntu\\home\\tamhid
                     '''
+                }
+            }
+            post {
+                always {
+                    step {
+                        echo 'Clean WS'
+                        deleteDir()
+                    }
                 }
             }
         }
@@ -20,14 +29,13 @@ pipeline {
                     pwd
                 '''
             }
-        }
-    }
-    post {
-        always {
-            agent {label 'windows' && label 'wsl'}
-            step {
-                echo 'Clean WS'
-                deleteDir()
+            post {
+                always {
+                    step {
+                        echo 'Clean WS'
+                        deleteDir()
+                    }
+                }
             }
         }
     }
