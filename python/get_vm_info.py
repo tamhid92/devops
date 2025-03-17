@@ -42,7 +42,7 @@ def main():
     ini_data = generate_inv_file(vm_info['ip'])
     print(f"{JENKINS_HOME}\\ansible\\hosts.ini")
     try:
-        with open(f"{JENKINS_HOME}\\ansible\\hosts.ini", "w+") as file:
+        with open("C:\\Jenkins\\workspace\\DevOps Pipeline\\ansible\\hosts.ini", "w+") as file:
             file.write(ini_data)
     except:
         print("File already exists")
