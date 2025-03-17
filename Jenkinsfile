@@ -34,7 +34,7 @@ pipeline {
                     echo 'Clean WS'
                     deleteDir()
                     sh '''
-                        rm /home/tamhid/hosts.ini
+                        cat /home/tamhid/hosts.ini
                     '''
                 }
             }
