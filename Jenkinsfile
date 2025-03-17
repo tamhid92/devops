@@ -7,7 +7,7 @@ pipeline {
                     powershell '''
                         echo $env:JENKINS_HOME
                         echo ${user} ${pass}
-                        python python\\get_vm_info.py ${user} ${pass} dev-master
+                        python python\\get_vm_info.py "${user}" "${pass}" dev-master
                     '''
                 }
             }
