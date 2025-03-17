@@ -30,8 +30,8 @@ def generate_inv_file(ip_addr):
 
 [master:vars]
 ansible_ssh_private_key_file=/home/tamhid/keys/tamhid_key
-ansible_become_method: sudo
-ansible_become_pass: "{sudo_pass}"
+ansible_become_method=sudo
+ansible_become_pass="{sudo_pass}"
     """
     print(ip_addr)
     return ini_data
