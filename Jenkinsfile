@@ -25,6 +25,8 @@ pipeline {
             steps{
                 sh '''
                     pwd
+                    cd /home/tamhid/
+                    ls
                 '''
             }
             post {
