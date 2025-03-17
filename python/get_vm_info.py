@@ -40,6 +40,7 @@ def main():
     vm_info = get_vm_info(vms, args.node_name)
     
     ini_data = generate_inv_file(vm_info['ip'])
+    print(f"{JENKINS_HOME}\\ansible\\hosts.ini")
     try:
         with open(f"{JENKINS_HOME}\\ansible\\hosts.ini", "w+") as file:
             file.write(ini_data)
