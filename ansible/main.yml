@@ -19,6 +19,14 @@
       - ../docker/docker-compose.yml
       - ../docker/dockerfile
 
+  - name: Copy over Python script files
+    copy:
+      src: "{{ item }}"
+      dest: /home/tamhid/docker/python/
+    loop:
+      - ../python/manutd_api.py
+      - ../python/populateDB.py
+
   - name: create and deploy docker compose services
     community.docker.docker_compose_v2:
       project_src: "/home/tamhid/docker"
