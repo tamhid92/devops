@@ -11,15 +11,15 @@
   #     name: microk8s
   #     classic: true
 
-  - name: Current working dir
-    shell: |
-      ls /var/lib/jenkins/workspace/devops-pipeline/
-    register: output
-
-  - name: Print output
-    debug: msg="{{output.stdout}}"
+  - name: Copy over Docker files
+    copy:
+      src: "{{items}}"
+      dest: /home/tamhid/docker/
+    loop:
+      - docker-compose.yml
+      - dockerfile
 
   - name: create and deploy docker compose services
     community.docker.docker_compose_v2:
-      project_src: /var/lib/jenkins/workspace/devops-pipeline
+      project_src: /home/tamhid/docker
       files: docker_compose.yml
