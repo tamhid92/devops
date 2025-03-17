@@ -25,8 +25,10 @@ pipeline {
     post {
         always {
             agent{label 'windows' && label 'wsl'}
+            steps{
                 echo 'Clean WS'
                 deleteDir()
+            }
         }
     }
 }
