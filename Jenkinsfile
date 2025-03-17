@@ -15,10 +15,8 @@ pipeline {
             }
             post {
                 always {
-                    step {
-                        echo 'Clean WS'
-                        deleteDir()
-                    }
+                    echo 'Clean WS'
+                    deleteDir()
                 }
             }
         }
@@ -31,10 +29,8 @@ pipeline {
             }
             post {
                 always {
-                    step {
-                        echo 'Clean WS'
-                        deleteDir()
-                    }
+                    echo 'Clean WS'
+                    deleteDir()
                 }
             }
         }
