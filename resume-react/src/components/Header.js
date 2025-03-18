@@ -1,5 +1,5 @@
 import React from 'react';
-import profilePic from '../avatar.png';
+import profilePic from '../IMG_6804.jpg';
 import { motion } from "framer-motion";
 
 function Header(props) {
