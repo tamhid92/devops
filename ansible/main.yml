@@ -2,14 +2,14 @@
 - name: Configure server
   hosts: all
   become: yes
-  # roles:
-  #   - docker
+  roles:
+    - docker
 
   tasks:
-  # - name: Install Microk8s
-  #   community.general.snap:
-  #     name: microk8s
-  #     classic: true
+  - name: Install Microk8s
+    community.general.snap:
+      name: microk8s
+      classic: true
 
   - name: Copy over Docker files
     copy:

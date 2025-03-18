@@ -1,0 +1,95 @@
+{
+    "personal_info": {
+      "name": "Tamhid Chowdhury",
+      "title": "Cloud DevOps Engineer",
+      "location": "Nashville",
+      "phone": "(615) 779-0755",
+      "email": "tamhidchowdhury@gmail.com",
+      "github": "github.com/tamhid92/devops",
+      "summary": "Motivated, team-oriented Cloud DevOps Engineer with 7 years of experience in the tech industry. Focused on the seamless integration of cloud services, expertise in automating, optimizing, and managing scalable, reliable, and secure cloud infrastructure. Proficient in AWS/Azure CI/CD pipelines, containerization, and Infrastructure as Code (IaC)."
+    },
+    "experience": [
+      {
+        "company": "Alvaria CX / Aspect Software",
+        "title": "Cloud DevOps Engineer",
+        "dates": "November 2021 - January 2025",
+        "description": [
+          "Reduced deployment time by 65% and failure rate by 30% by implementing fully automated CI/CD pipelines using Ansible and Terraform, enhancing deployment efficiency.",
+          "Led post-incident recovery efforts after a major security event, restoring infrastructure, identifying vulnerabilities, and implementing enhanced security measures.",
+          "Designed and implemented certificate procurement tools, securely storing them in HashiCorp Vault and integrating with configuration management tools to streamline deployment and ensure compliance.",
+          "Upgraded legacy deployment code to meet security compliance standards mitigating critical vulnerabilities, enhancing overall system security.",
+          "Led seamless cloud migrations, collaborating with cross-functional teams to transition customers from on-premises to cloud environments, improving scalability and operational efficiency.",
+          "Automated key operational tasks by developing PowerShell, Bash, and Python scripts for system monitoring, automation, and process optimization.",
+          "Managed and optimized server performance for Windows and Linux-based systems across cloud and on-premises environments.",
+          "Diagnosed and resolved cloud infrastructure issues, performing root cause analysis and implementing long-term solutions to enhance system stability."
+        ]
+      },
+      {
+        "company": "Alvaria CX/Aspect Software",
+        "title": "Customer Care Engineer",
+        "dates": "November 2020 - November 2021",
+        "description": [
+          "Provided Tier 2/3 support, diagnosing and resolving technical issues with proprietary software.",
+          "Assisted in system upgrades and migrations while performing log analysis to identify and resolve system issues.",
+          "Worked closely with senior engineers to implement security best practices and system hardening.",
+          "Published technical documentation and troubleshooting procedures for knowledge base articles.",
+          "Assisted in the training and onboarding of new hires."
+        ]
+      },
+      {
+        "company": "Enterprise Help Desk",
+        "title": "Enterprise Help Desk",
+        "dates": "September 2018 - October 2020",
+        "description": [
+          "Delivered expert technical support, swiftly diagnosing and resolving complex issues across enterprise software and diverse Windows and Linux environments.",
+          "Managed high volumes of service requests, maintaining a 95%+ customer satisfaction rate and achieving an 80%+ first-call resolution rate, ensuring seamless IT operations.",
+          "Stepped into a Tier II role, efficiently handling escalated service tickets and reducing resolution times.",
+          "Trained and mentored new hires, accelerating onboarding and strengthening team capabilities."
+        ]
+      }
+    ],
+    "technical_skills": [
+      "AWS",
+      "Azure",
+      "GCP",
+      "TCP/IP networking/routing",
+      "SSH/SFTP",
+      "SMTP",
+      "IMAP",
+      "HTTP",
+      "DNS",
+      "Docker",
+      "Kubernetes",
+      "Jenkins",
+      "Terraform",
+      "Ansible",
+      "Pulumi",
+      "Chef",
+      "Puppet",
+      "Python",
+      "Bash",
+      "Ruby",
+      "Shell",
+      "Datadog",
+      "Git",
+      "Bitbucket",
+      "Linux (RHEL, Ubuntu, Arch, Raspbian, etc.)",
+      "Windows Server"
+    ],
+    "education": {
+      "university": "Middle Tennessee State University",
+      "dates": "2016-2020",
+      "degree": "Computer Science",
+      "relevant_coursework": "Data Structures, Software Development, Algorithm"
+    },
+    "personal_project": {
+      "name": "Build a custom Linux distribution from scratch",
+      "description": "Configuring the kernel, bootloader (GRUB), and essential packages. Gained deep insights into Linux internals, system initialization, and dependency resolution."
+    },
+    "languages": [
+      "English",
+      "Bangla",
+      "Hindi",
+      "Urdu"
+    ]
+  }
