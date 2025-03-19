@@ -30,4 +30,4 @@ RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/ap
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["python", "manutd.py"]
