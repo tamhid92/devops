@@ -1,8 +1,5 @@
 wget
-pymongo
-uuid
 icalendar
 psycopg2-binary
-psycopg2
 flask
 hvac
