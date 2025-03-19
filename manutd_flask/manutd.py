@@ -1,20 +1,76 @@
 from icalendar import Calendar, Event, vCalAddress, vText
-from datetime import datetime
-from datetime import timedelta
-# import pymongo
+from datetime import datetime, timedelta
+from hvac_lib import HVACClient
+from flask import Flask,  jsonify, request
 import wget
-import uuid
 import hashlib
 import os
 import psycopg2
+
+app = Flask(__name__)
+
+@app.route('/', methods = ['GET']) 
+def home(): 
+    if(request.method == 'GET'):   
+        data = "Manchester United Fixtures"
+        return data 
+
+@app.route('/next_game', methods = ['GET']) 
+def next_game():
+    SQLQuery = f"""
+    select * from match
+    where date > '{today}'
+    order by date
+    limit 1
+    """ 
+    conn = psycopg2.connect(db_info)
+    cur = conn.cursor()
+    cur.execute(SQLQuery)
+    data = cur.fetchone()
+    cur.close()
+    conn.close()
+    game_string = f"[{data[4]}] -- {data[1]} V {data[2]} at {data[3]} | {str(data[5])} | {str(data[6])}"
+    return game_string
+
+@app.route('/remaining_games', methods = ['GET']) 
+def remaining_game():
+    SQLQuery = f"""
+    select * from match
+    where date > '{today}'
+    order by date
+    """ 
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(SQLQuery)
+    all_data = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    games = []
+    for data in all_data:
+        string = f"[{data[4]}] -- {data[1]} V {data[2]} at {data[3]} | {str(data[5])} | {str(data[6])}"
+        games.append(string)
+    
+    return games
 
 def downloadICS():
     url = "https://www.skysports.com/calendars/football/fixtures/teams/manchester-united"
     downloadfile = wget.download(url)
 
-# def createUUID(unistr):
-#     hex_string = hashlib.md5(unistr.encodecle"UTF-8")).hexdigest()
-#     return str(uuid.UUID(hex=hex_string))
+def get_db_connection(username, pwd):
+    vault_client = HVACClient()
+    creds =  vault_client.read('secret/data/postgres')
+    for key, value in creds.items():
+        username = key
+        pwd = value
+    
+    conn = psycopg2.connect(
+        host="localhost",
+        database="fixtures",
+        user=username,
+        password=pwd
+    )
+    return conn
 
 def populateFixtures():
     matches = []
@@ -47,18 +103,14 @@ def populateFixtures():
 
                 matches.append(matchinfo)
                 uid =  uid + 1
+    
+    os.remove('manchester-united')
     return matches
 
-def populateDB(data):
-    conn = psycopg2.connect(
-        dbname="fixtures",
-        user="postgres",
-        password="postgres",
-        host="postgres",
-        port=5431
-    )
+def populateDB(conn):
+    downloadICS()
+    matches = populateFixtures()
     cur = conn.cursor()
-
     cur.execute("""CREATE TABLE IF NOT EXISTS match (
         uid INT PRIMARY KEY,
         home_team VARCHAR(255),
@@ -79,12 +131,20 @@ def populateDB(data):
     conn.close()
 
 def main():
-    downloadICS()
-    print("Downloaded ICS file")
-    matches = populateFixtures()
-    print("Scraped ICS file successfully")
-    populateDB(matches)
-    os.remove('manchester-united')
 
-if __name__ == "__main__":
+    conn = get_db_connection()
+
+    # os.environ['POSTGRES_USER'] = username
+    # os.environ['POSTGRES_PASSWORD'] = pwd
+    # os.environ['POSTGRES_DB'] = 'fixtures'
+
+    populateDB(conn)
+    today = datetime.today().strftime('%Y-%m-%d')
+    app = Flask(__name__)
+
+
+if __name__ == '__main__':
     main()
+    app.run(debug = True, host="0.0.0.0", port=5000) 
+
+
