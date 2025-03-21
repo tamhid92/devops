@@ -6,7 +6,7 @@ isoPath = "C:\\Users\\tamhi\\Documents\\Linux_server_unpack\\ubuntu-server-insta
 
 
   
-File = open('powershell_script.temp', 'r') 
+File = open('../templates/powershell_script.temp', 'r') 
 content = File.read() 
 File.close() 
   

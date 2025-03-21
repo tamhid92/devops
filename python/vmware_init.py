@@ -32,7 +32,7 @@ def get_vm_info():
     return vm_info
 
 def crete_from_template(ip, sudo_pwd):
-    with open("../templates/hosts.tmp",'r') as file:
+    with open("../templates/hosts.temp",'r') as file:
         content = file.read()
     template = Template(content) 
     rendered_form = template.render(
