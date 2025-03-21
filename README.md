@@ -2,13 +2,13 @@
 
 This is just a collection of random scripts/projects that I'm working on.
 
-Infrastructure:
+#Infrastructure:
 
 Everything is developed in my home-lab environment with the following hardware:
  - Raspberry PI
  - Desktop PC (Running Windows and WSL)
 
-Raspberry PI:
+##Raspberry PI:
     - Hosts the Jenkins server
         - This has 2 worker nodes set.
             - Desktop PC (Windows Environment)
@@ -16,13 +16,13 @@ Raspberry PI:
     - Hosts the HashiCorp Vault Server as a docker container
         - I set it up on my Raspberry PI, so that I can access it from any device on my network
 
-Desktop PC:
+##Desktop PC:
     - This is set up to have two different environments. Windows and WSL for Linux jobs.
         - Set up a port forwarding rule to allow access to the WSL via SSH
     - The Windows environment hosts VMWare and VirtualBox that allows me to spin up VMs when needed for a job.
     - Necessary Utility programs installed such as PGAdmin to access DB
 
-JENKINS CI/CD Pipeline:
+#JENKINS CI/CD Pipeline:
     The Jenkinsfile runs as on a multinode setup to do the following:
         - Connects to the Windows Node:
             - Starts the VMWare Workstation Pro REST API.
@@ -32,13 +32,13 @@ JENKINS CI/CD Pipeline:
                 - Configures the VM. (Installs docker, MicroK8s, and copies over necessary files and certs from HasiCorp Vault)
                 - Runs K8s deployment files, deploys Postgres, my resume as a react app and the ManUtd Flask application.
 
-Ansible:
+#Ansible:
     - Created a custom role to install docker
     - Installs MicroK8s
     - Deploys a K8 pod for the manutd_flask app
     - Deploys resume-react app as a Docker container
 
-ManUtd_Flask:
+###ManUtd_Flask:
     - This is a flask application that pulls the fixture list for Manchester Uniter.
         - Downloads a calendar file with all the games.
         - Scrapes the file to get all the game information.
@@ -46,12 +46,12 @@ ManUtd_Flask:
         - Flask sets up the API service, pulling data from the DB to display next game as well as all the remaining games.
         - Both of those are containerized in Docker.
 
-resume_react:
+###resume_react:
     - This is the source folder that contains the dockerized react app that deploys my resume.
 
-VBOX:
-    - template-powershell.py This templates a Powershell script to deploy a VM in VirtualBox using the VBoxManage CLI tool.
-lib:
+###VBOX:
+    - `template-powershell.py` This templates a Powershell script to deploy a VM in VirtualBox using the VBoxManage CLI tool.
+###lib:
     - Contains the library files required for Vault and VMWare apis.
-templates:
+###templates:
     - Contains the template files to create the ansible host file as well as powershell script to deploy VirtualBox VMs.
