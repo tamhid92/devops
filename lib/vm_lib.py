@@ -4,7 +4,7 @@ import base64
 
 class server_params():
     def __init__(self):
-        self.ip = "192.168.68.80"
+        self.ip = "127.0.0.1"
         self.port = "8697"
         self.base_url = f"http://{self.ip}:{self.port}/api"
 
