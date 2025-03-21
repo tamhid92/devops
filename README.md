@@ -26,7 +26,9 @@ Everything is developed in my home-lab environment with the following hardware:
     The Jenkinsfile runs as on a multinode setup to do the following:
         - Connects to the Windows Node:
             - Starts the VMWare Workstation Pro REST API.
-            - Runs a python script to template the host file needed for Ansible (gets the VM IP address using the REST API and passwords from the vault)
+            - Runs a python script to template the host file needed for Ansible
+                - Gets the VM IP address using the VMWARE REST API
+                - Passwords are pulled from the vault
         - Connects to WSL:
             - Runs Ansible Playbooks which connects to VMWare VMs.
                 - Configures the VM. (Installs docker, MicroK8s, and copies over necessary files and certs from HasiCorp Vault)
@@ -50,7 +52,7 @@ Everything is developed in my home-lab environment with the following hardware:
     - This is the source folder that contains the dockerized react app that deploys my resume.
 
 ### VBOX:
-    - `template-powershell.py` This templates a Powershell script to deploy a VM in VirtualBox using the VBoxManage CLI tool.
+    - `template-powershell.py` - This templates a Powershell script to deploy a VM in VirtualBox using the VBoxManage CLI tool.
 ### lib:
     - Contains the library files required for Vault and VMWare apis.
 ### templates:
