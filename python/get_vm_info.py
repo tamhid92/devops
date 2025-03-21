@@ -36,19 +36,25 @@ ansible_become_pass="{sudo_pass}"
     print(ip_addr)
     return ini_data
 
+def check_vm_status():
+    resp = vm_rest_lib.get_vms()
+    print(resp)
+
 def main():
 
     vm_rest_lib.authenticate(uname, pwd)
-    vms = vm_rest_lib.get_vms()
-    vm_info = get_vm_info(vms, args.node_name)
+    print(check_vm_status())
+    # vms = vm_rest_lib.get_vms()
+    # vm_info = get_vm_info(vms, args.node_name)
     
-    ini_data = generate_inv_file(vm_info['ip'])
-    print(f"{JENKINS_HOME}\\ansible\\hosts.ini")
-    try:
-        with open("C:\\Jenkins\\workspace\\devOps-pipeline\\ansible\\hosts.ini", "w+") as file:
-            file.write(ini_data)
-    except:
-        print("File already exists")
+    # ini_data = generate_inv_file(vm_info['ip'])
+    # print(ini_data)
+    # print(f"{JENKINS_HOME}\\ansible\\hosts.ini")
+    # try:
+    #     with open("C:\\Jenkins\\workspace\\devOps-pipeline\\ansible\\hosts.ini", "w+") as file:
+    #         file.write(ini_data)
+    # except:
+    #     print("File already exists")
 
 if __name__ == '__main__':
     main()

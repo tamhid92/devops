@@ -1,7 +1,7 @@
 pipeline {
     agent none
     stages {
-        stage('Python Script to build inventory file') {
+        stage('Check VM Status') {
             agent {label 'windows'}
             steps{
                 withCredentials([usernamePassword(credentialsId: 'vmware-api', passwordVariable: 'api_pass', usernameVariable: 'api_user')]) {
