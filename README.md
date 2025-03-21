@@ -37,7 +37,7 @@ The Jenkins pipeline is set up to run in a multinode configuration and performs 
      - Installs essential software (Docker, MicroK8s, and other dependencies)
      - Copies necessary configuration files and certificates from **HashiCorp Vault**
      - Deploys Kubernetes workloads, including:
-       - **PostgreSQL database**
+       - **PostgreSQL database** (containerized)
        - **Resume React app** (containerized)
        - **ManUtd Flask application** (containerized)
 
@@ -65,6 +65,12 @@ A Flask-based web application that provides information on **Manchester United f
 
 ## VirtualBox Automation
 - `template-powershell.py`: A Python script that generates a **PowerShell script** to deploy a VM in **VirtualBox** using the `VBoxManage` CLI tool
+
+## Linux From Scratch (LFS) Project
+I have completed a project where I built a Linux distribution from scratch. One of the most tedious and repetitive parts of this process involves manually installing all the necessary packages. To streamline this, I automated the installation by:
+- Extracting a list of all required packages
+- Scraping the necessary commands from the LFS website
+- Compiling them into a comprehensive Bash script to automate the installation process - **`LFS/scrapeLFS.py`**
 
 ## Directory Structure
 - **`lib/`** - Contains utility libraries for interacting with **HashiCorp Vault** and **VMWare APIs**
