@@ -1,0 +1,36 @@
+Write-Host "#############################################" -ForegroundColor Yellow
+$vmname = "{{vmname}}"
+$ostype = "Ubuntu_64"
+$isofile = "{{isofile}}"
+$cpus = 6
+$ram = 8192
+$diskSize = 40960  # 20GB in MB (20 * 1024)
+$videoMemory = 32  # Default video memory in MB
+$networkadapter = "Intel(R) I211 Gigabit Network Connection"
+
+# Create directory if it doesn't exist
+$vmPath = "{{vmpath}}"
+if (!(Test-Path $vmPath)) {
+    New-Item -ItemType Directory -Path $vmPath | Out-Null
+}
+
+& "VBoxManage" createvm --name "$vmname" --ostype "$ostype" --register
+& "VBoxManage" modifyvm "$vmname" --cpus $cpus --memory $ram --vram $videoMemory
+& "VBoxManage" createhd --filename "$vmPath\$vmname.vdi" --size $diskSize --format VDI
+& "VBoxManage" storagectl "$vmname" --name "SATA Controller" --add SATA --controller IntelAhci
+& "VBoxManage" storageattach "$vmname" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium "$vmPath\$vmname.vdi"
+& "VBoxManage" storageattach "$vmname" --storagectl "SATA Controller" --port 1 --device 0 --type dvddrive --medium "$isofile"
+& "VBoxManage" modifyvm $vmname --boot1 dvd --boot2 disk --boot3 none --boot4 none
+& "VBoxManage" showvminfo $vmname
+
+& "VBoxManage" startvm "$vmname" --type headless
+Write-Host "#############################################" -ForegroundColor Yellow
+Write-Host "VM '$vmname' created with $cpus CPUs, $ram MB RAM, $diskSize virtual disk."
+Write-Host "Sleeping --- Waiting for OS to finish install --- Sleeping for 8 Minutes" -ForegroundColor Yellow
+Start-Sleep -Seconds 500 
+Write-Host "Installation complete - Shutting down to fix network" -ForegroundColor Yellow
+& "VBoxManage" controlvm "$vmname" poweroff
+Write-Host "Waiting for VM to power down..." -ForegroundColor Yellow
+Start-Sleep -Seconds 15
+& "VBoxManage" modifyvm "$vmname" --nic1 bridged --bridge-adapter1 $networkadapter
+& "VBoxManage" startvm "$vmname" --type headless

@@ -7,6 +7,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'vmware-api', passwordVariable: 'api_pass', usernameVariable: 'api_user')]) {
                     withCredentials([usernamePassword(credentialsId: 'sudo', passwordVariable: 'sudo_pass', usernameVariable: 'sudo_user')]) {
                         powershell '''
+                            Start-Process -FilePath "C:\\Program Files (x86)\\VMware\\VMware Workstation\\vmrest.exe"
                             echo $env:JENKINS_HOME
                             python python\\get_vm_info.py dev-master
                             cd ansible
