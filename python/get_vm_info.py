@@ -24,6 +24,7 @@ def get_vm_info(resp, node_name):
     return vm_info
 
 def generate_inv_file(ip_addr):
+
     ini_data = f"""
 [master]
 {ip_addr}
@@ -37,8 +38,7 @@ ansible_become_pass="{sudo_pass}"
     return ini_data
 
 def check_vm_status():
-    resp = vm_rest_lib.get_vms()
-    print(resp)
+    resp = vm_rest_lib.get_power()
 
 def main():
 
