@@ -1,59 +1,78 @@
-# devops
+# DevOps Projects Repository
 
-This is just a collection of random scripts/projects that I'm working on.
+## Overview
+This repository is a collection of various scripts and projects that I am currently working on. These projects are developed and tested in my home-lab environment, which consists of a mix of Raspberry Pi and desktop PC hardware. The infrastructure is designed to support a multi-environment DevOps workflow, incorporating CI/CD pipelines, automation, containerization, and infrastructure as code (IaC).
 
-# Infrastructure:
+## Home Lab Infrastructure
+### Hardware:
+- **Raspberry Pi** (Hosts key services and automation tools)
+- **Desktop PC** (Running both Windows and WSL for multi-environment support)
 
-Everything is developed in my home-lab environment with the following hardware:
- - Raspberry PI
- - Desktop PC (Running Windows and WSL)
+### Raspberry Pi:
+- **Jenkins Server**
+  - Configured with two worker nodes:
+    - **Windows Node:** Desktop PC running Windows
+    - **Linux Node:** Desktop PC running WSL (Windows Subsystem for Linux), enabling Ansible execution
+- **HashiCorp Vault Server** (Running as a Docker container)
+  - Set up to be accessible from any device within my network for centralized secrets management
 
-## Raspberry PI:
-    - Hosts the Jenkins server
-        - This has 2 worker nodes set.
-            - Desktop PC (Windows Environment)
-            - Desktop PC (WSL - Set up as a seperate Linux node, so that I can run Ansible)
-    - Hosts the HashiCorp Vault Server as a docker container
-        - I set it up on my Raspberry PI, so that I can access it from any device on my network
+### Desktop PC:
+- Configured with both Windows and WSL environments to facilitate hybrid workflows
+- **Port forwarding** is enabled to allow SSH access to WSL from external devices
+- **Virtualization Support:**
+  - Runs **VMWare Workstation Pro** and **VirtualBox** to create and manage virtual machines on demand
+- **Essential DevOps utilities installed**, such as **PGAdmin** for PostgreSQL database management
 
-## Desktop PC:
-    - This is set up to have two different environments. Windows and WSL for Linux jobs.
-        - Set up a port forwarding rule to allow access to the WSL via SSH
-    - The Windows environment hosts VMWare and VirtualBox that allows me to spin up VMs when needed for a job.
-    - Necessary Utility programs installed such as PGAdmin to access DB
+## Jenkins CI/CD Pipeline
+The Jenkins pipeline is set up to run in a multinode configuration and performs the following tasks:
 
-# JENKINS CI/CD Pipeline:
-    The Jenkinsfile runs as on a multinode setup to do the following:
-        - Connects to the Windows Node:
-            - Starts the VMWare Workstation Pro REST API.
-            - Runs a python script to template the host file needed for Ansible
-                - Gets the VM IP address using the VMWARE REST API
-                - Passwords are pulled from the vault
-        - Connects to WSL:
-            - Runs Ansible Playbooks which connects to VMWare VMs.
-                - Configures the VM. (Installs docker, MicroK8s, and copies over necessary files and certs from HasiCorp Vault)
-                - Runs K8s deployment files, deploys Postgres, my resume as a react app and the ManUtd Flask application.
+1. **Windows Node:**
+   - Starts the **VMWare Workstation Pro REST API**
+   - Executes a Python script to generate an **Ansible host file**, which:
+     - Retrieves the VM's IP address using the VMWare REST API
+     - Fetches necessary passwords and credentials from **HashiCorp Vault**
 
-# Ansible:
-    - Created a custom role to install docker
-    - Installs MicroK8s
-    - Deploys a K8 pod for the manutd_flask app
-    - Deploys resume-react app as a Docker container
+2. **WSL Node:**
+   - Runs Ansible playbooks to configure VMs on **VMWare**
+     - Installs essential software (Docker, MicroK8s, and other dependencies)
+     - Copies necessary configuration files and certificates from **HashiCorp Vault**
+     - Deploys Kubernetes workloads, including:
+       - **PostgreSQL database**
+       - **Resume React app** (containerized)
+       - **ManUtd Flask application** (containerized)
 
-### ManUtd_Flask:
-    - This is a flask application that pulls the fixture list for Manchester Uniter.
-        - Downloads a calendar file with all the games.
-        - Scrapes the file to get all the game information.
-        - Stores all the data in a Postgres DB.
-        - Flask sets up the API service, pulling data from the DB to display next game as well as all the remaining games.
-        - Both of those are containerized in Docker.
+## Ansible Automation
+The Ansible playbooks automate infrastructure provisioning and application deployment with the following key features:
+- **Custom Role for Docker Installation**
+- **MicroK8s Deployment**
+- **Kubernetes-based application deployment:**
+  - Deploys a pod for the **ManUtd Flask app**
+  - Deploys the **resume React app** as a Docker container
 
-### resume_react:
-    - This is the source folder that contains the dockerized react app that deploys my resume.
+## ManUtd Flask Application
+A Flask-based web application that provides information on **Manchester United fixtures**. The application:
+- Downloads a **calendar file** containing match schedules
+- Scrapes and processes the fixture data
+- Stores parsed data in a **PostgreSQL database**
+- Exposes an API to retrieve:
+  - Upcoming matches
+  - Complete fixture list
+- Both the Flask app and PostgreSQL database are containerized using **Docker**
 
-### VBOX:
-    - `template-powershell.py` - This templates a Powershell script to deploy a VM in VirtualBox using the VBoxManage CLI tool.
-### lib:
-    - Contains the library files required for Vault and VMWare apis.
-### templates:
-    - Contains the template files to create the ansible host file as well as powershell script to deploy VirtualBox VMs.
+## Resume React Application
+- A React-based web application that hosts my resume
+- Packaged as a Docker container for easy deployment and scalability
+
+## VirtualBox Automation
+- `template-powershell.py`: A Python script that generates a **PowerShell script** to deploy a VM in **VirtualBox** using the `VBoxManage` CLI tool
+
+## Directory Structure
+- **`lib/`** - Contains utility libraries for interacting with **HashiCorp Vault** and **VMWare APIs**
+- **`templates/`** - Stores template files for:
+  - Generating **Ansible inventory files**
+  - Creating **PowerShell scripts** for VirtualBox VM deployment
+
+## Conclusion
+This repository serves as an evolving collection of my DevOps projects, demonstrating my ability to build, automate, and manage infrastructure using industry-standard tools such as **Jenkins, Ansible, Kubernetes, Docker, and HashiCorp Vault**. My home lab environment allows me to experiment with real-world DevOps scenarios, bridging Windows and Linux ecosystems for a comprehensive infrastructure setup.
+
+Feel free to explore and contribute!
