@@ -3,32 +3,25 @@ from datetime import datetime, timedelta
 from flask import Flask, jsonify, request
 import wget
 import os
-import psycopg2
+import psycopg2, json
 from hvac_lib import HVACClient
 
 app = Flask(__name__)
 
 def get_db_connection():
-    vault_client = HVACClient()
-    creds =  vault_client.read('secret/data/postgres')
-    for key, value in creds.items():
-        username = key
-        pwd = value
-    if username and pwd:
-        try:
-            conn = psycopg2.connect(
-                host="192.168.117.140",
-                port=5432,
-                database="postgres",
-                user=username,
-                password=pwd
-            )
-            return conn
-        except psycopg2.Error as e:
-            print(f"Error connecting to the database: {e}")
-            return None
-    else:
-        print("Username or password not found in Vault.")
+    with open ("db_conn.json", "r") as file:
+        data =json.load(file)
+    try:
+        conn = psycopg2.connect(
+            host=data["host"],
+            port=data["port"],
+            database="postgres",
+            user=data["user"],
+            password=data["password"]
+        )
+        return conn
+    except psycopg2.Error as e:
+        print(f"Error connecting to the database: {e}")
         return None
 
 @app.route('/', methods=['GET'])
