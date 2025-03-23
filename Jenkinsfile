@@ -25,6 +25,7 @@ pipeline {
             agent {label 'wsl'}
             steps{
                 sh '''
+                    ansible-galaxy collection install community.hashi\_vault
                     ansible-galaxy collection install community.docker
                     ansible-playbook ansible/main.yml -i /home/tamhid/hosts.ini
                 '''
