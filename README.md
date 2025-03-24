@@ -37,7 +37,7 @@ The Jenkins pipeline is set up to run in a multinode configuration and performs 
      - Installs essential software (Docker, MicroK8s, and other dependencies)
      - Copies necessary configuration files and certificates from **HashiCorp Vault**
      - Deploys Kubernetes workloads, including:
-       - **PostgreSQL database** (containerized)
+       - **PostgreSQL database** (deployed as a Kubernetes pod)
        - **Resume React app** (containerized)
        - **ManUtd Flask application** (containerized)
 
