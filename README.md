@@ -46,8 +46,9 @@ The Ansible playbooks automate infrastructure provisioning and application deplo
 - **Custom Role for Docker Installation**
 - **MicroK8s Deployment**
 - **Kubernetes-based application deployment:**
-  - Deploys a pod for the **ManUtd Flask app**
-  - Deploys the **resume React app** as a Docker container
+  - Deploys a pod for the ManUtd Flask app
+  - Deploys the resume React app as a Docker container
+  - Deploys PostgreSQL as a Kubernetes pod
 
 ## ManUtd Flask Application
 A Flask-based web application that provides information on **Manchester United fixtures**. The application:
