@@ -7,8 +7,8 @@ api_base = f'https://192.168.68.79:8006'
 print(f'Proxmox API base URL: {api_base}')
 
 # Proxmox API token
-PROXMOX_TOKEN_NAME = "root@pam!terraform"
-PROXMOX_TOKEN_VALUE = "942f20a3-d87d-4f3a-9aba-402c05583a02"
+PROXMOX_TOKEN_NAME = ""
+PROXMOX_TOKEN_VALUE = ""
 
 def get_online_node():
     """Fetches the first online node."""
