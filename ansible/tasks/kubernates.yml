@@ -66,16 +66,16 @@
       microk8s kubectl get svc postgres -o json | jq -r '.spec' | jq -r '.ports[0]' | jq -r '.nodePort'
     register: portnum
   
-  - name: Get facts
-    set_fact:
-      ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-      port: "{{ portnum.stdout }}"
-      username: "{{ item.key }}"
-      pwd: "{{ item.value }}"
-    with_dict: "{{ response.secret }}"
+  # - name: Get facts
+  #   set_fact:
+  #     ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+  #     port: "{{ portnum.stdout }}"
+  #     username: "{{ item.key }}"
+  #     pwd: "{{ item.value }}"
+  #   with_dict: "{{ response.secret }}"
     
-  - name: Create DB conn file
-    local_action:
-      module: template
-      src: ../../templates/db_conn.j2
-      dest: /mnt/c/Users/tamhi/Documents/GIT/devops/manutd_flask/db_conn.json
+  # - name: Create DB conn file
+  #   local_action:
+  #     module: template
+  #     src: ../../templates/db_conn.j2
+  #     dest: /mnt/c/Users/tamhi/Documents/GIT/devops/manutd_flask/db_conn.json

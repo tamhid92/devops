@@ -1,5 +1,5 @@
 ---
-- name: Configure server
+- name: Configure Server
   hosts: all
   become: yes
   roles:
@@ -10,32 +10,3 @@
     community.general.snap:
       name: microk8s
       classic: true
-
-  - name: Copy over Docker files
-    copy:
-      src: "{{ item }}"
-      dest: /home/tamhid/docker/
-    loop:
-      - ../docker/docker-compose.yml
-      - ../docker/dockerfile
-
-  - name: Copy over Python script files
-    copy:
-      src: "{{ item }}"
-      dest: /home/tamhid/docker/python/
-    loop:
-      - ../python/manutd_api.py
-      - ../python/populateDB.py
-      - ../python/requirements.txt
-
-  - name: Install PGAdmin
-    shell: |
-      curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
-      sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
-      sudo apt install pgadmin4-web 
-      sudo /usr/pgadmin4/bin/setup-web.sh
-
-  - name: create and deploy docker compose services
-    community.docker.docker_compose_v2:
-      project_src: "/home/tamhid/docker"
-      files: "docker-compose.yml"
