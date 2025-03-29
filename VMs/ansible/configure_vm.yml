@@ -1,0 +1,19 @@
+---
+- name: Configure VM Server
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Create TFBACUP Folder
+    ansible.builtin.file:
+      path: "/home/TF_FILES"
+      state: directory
+  - name: Copy Terraform Folder
+    copy:
+      src: "{{ playbook_dir }}/../{{ vm_name }}/"
+      dest: /home/TF_FILES/
+  - name: Change hostname
+    hostname:
+      name: "{{ vm_name }}"
+  - name: Reboot VM
+    reboot:

@@ -1,0 +1,89 @@
+---
+- name: Configure Server
+  hosts: all
+  become: yes
+
+  environment:
+    TF_VAR_proxmox_api_token_id: ''
+    TF_VAR_proxmox_api_token_secret: ''
+
+  tasks:
+  - name: Create a VM folder
+    ansible.builtin.file:
+      path: "{{ playbook_dir }}/../{{ vm_name }}"
+      state: directory
+    delegate_to: 127.0.0.1
+
+  - name: Create TF vars file
+    template:
+      src: templates/create_vm.tf.j2
+      dest: "{{ playbook_dir }}/../{{ vm_name }}/create_vm.tf"
+    delegate_to: 127.0.0.1
+
+  - name: Copy over TF files
+    copy:
+      src: "{{ playbook_dir }}/../{{ item }}"
+      dest: "{{ playbook_dir }}/../{{ vm_name }}/{{ item }}"
+    loop:
+      - provider.tf
+    delegate_to: 127.0.0.1
+
+  - name: Terraform init
+    command:
+      chdir: "{{ playbook_dir }}/../{{ vm_name }}"
+      cmd: "terraform init"
+    register: terraform_init
+    delegate_to: 127.0.0.1
+
+  - name: Terraform init output
+    debug:
+      msg: "{{ terraform_init }}"
+    delegate_to: 127.0.0.1
+
+  - name: Terraform plan
+    command:
+      chdir: "{{ playbook_dir }}/../{{ vm_name }}"
+      cmd: "terraform plan"
+    register: terraform_plan
+    delegate_to: 127.0.0.1
+
+  - name: Terraform plan output
+    debug:
+      msg: "{{ terraform_plan }}"
+    delegate_to: 127.0.0.1
+
+  - name: Terraform apply
+    command:
+      chdir: "{{ playbook_dir }}/../{{ vm_name }}"
+      cmd: "terraform apply -auto-approve"
+    register: terraform_apply
+    delegate_to: 127.0.0.1
+
+  - name: Terraform init output
+    debug:
+      msg: "{{ terraform_apply }}"
+    delegate_to: 127.0.0.1
+
+  - name: Get VMID
+    shell: |
+      qm list | grep "{{ vm_name }}" | awk '{split($0,a," "); print a[1]}'
+    register: vmid
+
+  - name: VMID
+    debug:
+      msg: "{{ vmid.stdout }}"
+  
+  - name: Get VM IP address
+    shell: |
+       qm guest cmd {{ vmid.stdout }} network-get-interfaces | jq  '.[1] | ."ip-addresses" | .[0] | ."ip-address"' | tr -d '"'
+    register: vm_ip
+  
+  - name: VM_IP
+    debug:
+      msg: "{{ vm_ip.stdout }}"
+
+  - name: Create New VM Host File
+    template:
+      src: templates/new_vm_host.ini.j2
+      dest: "{{ playbook_dir }}/hosts/new_vm_host.ini"
+    delegate_to: 127.0.0.1
