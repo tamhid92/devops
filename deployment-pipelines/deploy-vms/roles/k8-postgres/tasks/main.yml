@@ -1,0 +1,7 @@
+---
+- name: Install Microk8s
+  community.general.snap:
+    name: microk8s
+    classic: true
+- name: Run K8 stuff
+  import_tasks: kubernates.yml

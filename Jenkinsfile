@@ -5,7 +5,7 @@ pipeline {
             agent {label 'windows'}
             steps{
                 withCredentials([usernamePassword(credentialsId: 'vmware-api', passwordVariable: 'api_pass', usernameVariable: 'api_user')]) {
-                    powershell '''
+                    sh '''
                         Start-Process -FilePath "C:\\Program Files (x86)\\VMware\\VMware Workstation\\vmrest.exe"
                         echo $env:JENKINS_HOME
                         python python\\get_vm_info.py dev-master

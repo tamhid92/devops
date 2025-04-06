@@ -1,0 +1,187 @@
+---
+- name: Deploy Application
+  hosts: apphost
+
+  tasks:
+  # sanity check
+  - name: Running DESTROY. STOP NOW if you dont' want to delete it. Sleeping for 5 seconds.
+    ansible.builtin.wait_for:
+      timeout: 5
+    delegate_to: 127.0.0.1
+    tags: remove
+
+  - name: Create ansible folder
+    file:
+      path: '/home/{{ ansible_ssh_user }}/ansible'
+      state: directory
+    tags: run
+  - name: Create application folder
+    file:
+      path: '/home/{{ ansible_ssh_user }}/ansible/{{ app_name }}'
+      state: directory
+    tags: run
+  - name: Copy all application files
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: "/home/{{ ansible_ssh_user }}/ansible/{{ app_name }}"
+    with_fileglob:
+      - "../docker_apps/{{ app_name }}/*"
+    tags: run
+
+  - name: Build Docker Image
+    community.docker.docker_image:
+      name: "{{ app_name }}"
+      build:
+        path: /home/{{ ansible_ssh_user }}/ansible/{{ app_name }}/
+      source: build
+    tags: run
+
+  - name: Run Docker Container
+    community.docker.docker_container:
+      name: "{{ app_name }}"
+      image: "{{ app_name }}"
+      state: started
+      restart_policy: always
+      ports:
+        - "{{ app_port }}:5000"
+      detach: true
+      env:
+        VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
+    tags: run
+
+  - name: Login to Vault
+    community.hashi_vault.vault_kv2_get:
+      url: "{{ lookup('env', 'VAULT_ADDR') }}"
+      engine_mount_point: secret
+      path: cloudflare_api_token
+      auth_method: token
+    environment:
+      VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
+    register: response
+    delegate_to: 127.0.0.1
+    tags: always
+
+  - name: Create a record using api token
+    community.general.cloudflare_dns:
+      zone: tchowdhury.org
+      record: "{{ app_name }}"
+      type: A
+      value: 192.168.68.77
+      api_token: "{{ item.value }}"
+    with_dict: "{{ response.secret }}"
+    delegate_to: 127.0.0.1
+    no_log: true
+    tags: run
+
+  - name: Delete the record
+    community.general.cloudflare_dns:
+      zone: tchowdhury.org
+      type: A
+      value: 192.168.68.77
+      record: "{{ app_name }}"
+      api_token: "{{ item.value }}"
+      state: absent
+    with_dict: "{{ response.secret }}"
+    delegate_to: 127.0.0.1
+    no_log: true
+    tags: remove
+
+  - name: Stop and Remove Docker Container
+    community.docker.docker_container:
+      name: "{{ app_name }}"
+      state: absent
+    tags: remove
+
+  - name: Remove Docker Image
+    community.docker.docker_image:
+      name: "{{ app_name }}"
+      state: absent
+    tags: remove
+
+- name: Make RP changes
+  hosts: reverse-proxy
+  become: yes
+
+  tasks:
+  - name: Create ansible folder
+    file:
+      path: '/home/{{ ansible_ssh_user }}/ansible'
+      state: directory
+    tags: run
+
+  - name: Template python vars file
+    template:
+      src: 'templates/app_vars.json.j2'
+      dest: '/home/{{ ansible_ssh_user }}/ansible/app_vars.json'
+    tags: run
+  
+  - name: Copy files to RP
+    copy:
+      src: '{{ item }}'
+      dest: '/home/{{ ansible_ssh_user }}/ansible'
+    loop:
+      - 'python/update_reverse_proxy.py'
+      - 'templates/nginix-conf.conf.j2'
+    tags: run
+  
+  - name: Create backup folder
+    file:
+      path: '/home/tamhid/nginix/data/backup'
+      state: directory
+    tags: always
+  - name: Create a database backup and make a copy to edit
+    shell: |
+      sudo cp /home/tamhid/nginix/data/database.sqlite /home/tamhid/nginix/data/backup/database.sqlite.bkup
+    tags: always
+  - name: Make a DB copy to edit
+    shell: |
+      sudo cp /home/tamhid/nginix/data/database.sqlite /home/{{ ansible_ssh_user }}/ansible/database.sqlite
+    tags: run
+
+  - name: Run Python Script to update nginix
+    shell: |
+      python3 /home/{{ ansible_ssh_user }}/ansible/update_reverse_proxy.py
+    register: id_
+    tags: run
+  
+  - name: Copy conf file
+    copy: 
+      src: /home/tamhid/ansible/{{ id_.stdout }}.conf
+      dest: /home/tamhid/nginix/data/nginx/proxy_host/
+      remote_src: true
+    tags: run
+
+  - name: Delete current database and copy over edited one and nginix config file
+    shell: |
+      sudo rm /home/tamhid/nginix/data/database.sqlite
+      sudo cp /home/{{ ansible_ssh_user }}/ansible/database.sqlite /home/tamhid/nginix/data/database.sqlite
+    tags: run
+  
+  - name: Get ID for app
+    shell: |
+      sudo sqlite3 nginix/data/database.sqlite "select id from proxy_host where domain_names like '%{{ app_name }}%';"
+    register: id
+    tags: remove
+
+  - name: Delete nginix config file
+    file:
+      path: '~/nginix/data/ngnix/proxy_host/{{ id.stdout }}.conf'
+      state: absent
+    become: yes
+    tags: remove
+
+  - name: Delete SQLite entry for app
+    shell: |
+      sudo sqlite3 nginix/data/database.sqlite "delete from proxy_host where domain_names like '%{{ app_name }}%';"
+    tags: remove
+
+  - name: Restart nginix docker container
+    community.docker.docker_container:
+      name: "nginix_app_1"
+      restart: true
+    tags: always
+
+  - name: Clean Up leftover files on RP
+    ansible.builtin.file:
+      state: absent
+      path: /home/tamhid/ansible/
