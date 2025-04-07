@@ -10,7 +10,7 @@
 
 - name: Copy over TF files
   copy:
-    src: "{{ playbook_dir }}/../files/{{ item }}"
+    src: "{{ playbook_dir }}/files/{{ item }}"
     dest: "{{ playbook_dir }}/../{{ vm_name }}/{{ item }}"
   loop:
     - provider.tf

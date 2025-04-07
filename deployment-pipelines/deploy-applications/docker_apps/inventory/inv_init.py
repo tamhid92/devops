@@ -1,7 +1,7 @@
 import paramiko
-import paramiko.pkey
-import json, psycopg2, io
+import json, psycopg2, io, argparse
 from hvac_lib import HVACClient
+
 
 def get_running_vms_qemu_agent(proxmox_host, proxmox_user, proxmox_key):
 
@@ -107,9 +107,21 @@ def populate_db(data):
 
 def main():
 
+    parser = argparse.ArgumentParser(description="Select the ssh key to use for Proxmox")
+    parser.add_argument(
+        "--ssh-key",
+        dest="ssh_key_path",
+        required=True,
+        help="Path to the SSH private key file.",
+    )
+    args = parser.parse_args()
+
+    ssh_key_file = args.ssh_key_path
+    print(f"SSH key file path provided: {ssh_key_file}")
+
     proxmox_host = "192.168.68.79"
     proxmox_user = "root"
-    proxmox_key = "C:\\Users\\tamhi\\.ssh\\id_ecdsa.pub"
+    proxmox_key = ssh_key_file
     running_vms = get_running_vms_qemu_agent(proxmox_host, proxmox_user, proxmox_key)
 
     populate_db(running_vms)

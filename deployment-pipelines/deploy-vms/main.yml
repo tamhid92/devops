@@ -13,13 +13,13 @@
     shell: |
       qm list | grep "{{ vm_name }}" | awk '{split($0,a," "); print a[1]}'
     register: vmid
-    tags: apply
+    tags: always
   
   - name: Get VM IP address
     shell: |
        qm guest cmd {{ vmid.stdout }} network-get-interfaces | jq  '.[1] | ."ip-addresses" | .[0] | ."ip-address"' | tr -d '"'
     register: vm_ip
-    tags: apply
+    tags: always
   
   - name: VM_IP
     debug:
@@ -36,13 +36,30 @@
 
   - name: Add VM to DB
     ansible.builtin.uri:
-      url: https://inventory.tchowdhury.org/vms/
+      url: https://inventory.tchowdhury.org/vms
       method: POST
-      body: "{vmid:{{ vmid.stdout }}, name:{{ vm_name }}, ip_addr:{{ vm_ip.stdout }}}"
-      status_code: 201
+      body: '{"vmid":"{{ vmid.stdout }}", "name":"{{ vm_name }}", "ip_addr":"{{ vm_ip.stdout }}"}'
       body_format: json
+      status_code: 201
+    register: _result
+    until: _result.status == 201
+    retries: 10
+    delay: 10
+    delegate_to: 127.0.0.1
     tags: apply
 
+  - name: Sleep for 30 seconds and continue with play
+    ansible.builtin.wait_for:
+      timeout: 30
+    delegate_to: localhost
+    tags: apply
+
+  - name: Remove VM from DB
+    ansible.builtin.uri:
+      url: "https://inventory.tchowdhury.org/vms/{{ vm_name }}"
+      method: DELETE
+    delegate_to: 127.0.0.1
+    tags: destroy
 
 - name: Configure VM Server
   hosts: VM
@@ -72,6 +89,7 @@
   - name: Install docker
     import_role:
       name: docker
+    tags: apply
 
   - name: Reboot VM
     reboot:
@@ -87,7 +105,7 @@
     delegate_to: 127.0.0.1
     tags: destroy
 
-  - name: Fetch all files from remote directory
+  - name: Fetch TF State files
     synchronize:
       src: "/home/TF_FILES"
       dest: "{{ playbook_dir }}/../{{ vm_name }}/"
@@ -111,12 +129,6 @@
       msg: "{{ terraform_destroy }}"
     delegate_to: 127.0.0.1
     tags: destroy
-  
-  - name: Remove VM from DB
-    ansible.builtin.uri:
-      url: "https://inventory.tchowdhury.org/vms/{{ vm_name }}"
-      method: DELETE
-    tags: DELETE
 
 
 
