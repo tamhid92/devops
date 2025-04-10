@@ -1,5 +1,6 @@
 import sqlite3
 import datetime
+import json
 import os, argparse
 from jinja2 import Environment, FileSystemLoader
 
@@ -7,6 +8,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", required=True, type=str)
 parser.add_argument("-p", "--port", required=True, type=int)
 parser.add_argument("-ip","--ipaddress", type=str, default="192.168.68.73")
+
 
 args = parser.parse_args()
 app_name = args.name
@@ -53,7 +55,6 @@ def deploy_app():
 
         cursor.execute(insert_sql, sql_data)
         conn.commit()
-
     except sqlite3.Error as e:
         print(f"[ERROR] Database operation failed: {e}")
     finally:

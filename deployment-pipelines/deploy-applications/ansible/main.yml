@@ -109,12 +109,6 @@
       state: directory
     tags: run
 
-  - name: Template python vars file
-    template:
-      src: 'templates/app_vars.json.j2'
-      dest: '/home/{{ ansible_ssh_user }}/ansible/app_vars.json'
-    tags: run
-  
   - name: Copy files to RP
     copy:
       src: '{{ item }}'
@@ -140,15 +134,7 @@
 
   - name: Run Python Script to update nginix
     shell: |
-      python3 /home/{{ ansible_ssh_user }}/ansible/update_reverse_proxy.py
-    register: id_
-    tags: run
-  
-  - name: Copy conf file
-    copy: 
-      src: /home/tamhid/ansible/{{ id_.stdout }}.conf
-      dest: /home/tamhid/nginix/data/nginx/proxy_host/
-      remote_src: true
+      sudo python3 /home/{{ ansible_ssh_user }}/ansible/update_reverse_proxy.py -n {{ app_name }} -p {{ app_port }}
     tags: run
 
   - name: Delete current database and copy over edited one and nginix config file
