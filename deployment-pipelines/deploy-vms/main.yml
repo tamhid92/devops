@@ -1,5 +1,5 @@
 ---
-- name: Manage Servers
+- name: Build/Destroy a new VM
   hosts: pve
   become: yes
 
@@ -40,18 +40,13 @@
       method: POST
       body: '{"vmid":"{{ vmid.stdout }}", "name":"{{ vm_name }}", "ip_addr":"{{ vm_ip.stdout }}"}'
       body_format: json
-      status_code: 201
-    register: _result
-    until: _result.status == 201
-    retries: 10
-    delay: 10
+      status_code: 201, 500
+    ignore_errors: true
+    # register: _result
+    # until: _result.status == 201
+    # retries: 10
+    # delay: 10
     delegate_to: 127.0.0.1
-    tags: apply
-
-  - name: Sleep for 30 seconds and continue with play
-    ansible.builtin.wait_for:
-      timeout: 30
-    delegate_to: localhost
     tags: apply
 
   - name: Remove VM from DB
@@ -64,8 +59,13 @@
 - name: Configure VM Server
   hosts: VM
   become: yes
+  gather_facts: no
 
   tasks:
+  - name: Wait for connection
+    wait_for_connection:
+      delay: 10
+      timeout: 300
   - name: Create TFBACUP Folder
     ansible.builtin.file:
       path: "/home/TF_FILES"
@@ -89,6 +89,11 @@
   - name: Install docker
     import_role:
       name: docker
+    tags: apply
+  
+  - name: Install k8 pre-reqs
+    import_role:
+      name: k8-install
     tags: apply
 
   - name: Reboot VM
@@ -129,6 +134,3 @@
       msg: "{{ terraform_destroy }}"
     delegate_to: 127.0.0.1
     tags: destroy
-
-
-
