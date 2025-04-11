@@ -1,0 +1,136 @@
+---
+- name: Build/Destroy a new VM
+  hosts: pve
+  become: yes
+
+  tasks:
+  - name: Run Terraform apply
+    import_tasks: tasks/terraform-apply.yml
+    delegate_to: 127.0.0.1
+    tags: apply
+
+  - name: Get VMID
+    shell: |
+      qm list | grep "{{ vm_name }}" | awk '{split($0,a," "); print a[1]}'
+    register: vmid
+    tags: always
+  
+  - name: Get VM IP address
+    shell: |
+       qm guest cmd {{ vmid.stdout }} network-get-interfaces | jq  '.[1] | ."ip-addresses" | .[0] | ."ip-address"' | tr -d '"'
+    register: vm_ip
+    tags: always
+  
+  - name: VM_IP
+    debug:
+      msg: "{{ vm_ip.stdout }}"
+    tags: always
+
+  - name: Add host to group VM
+    ansible.builtin.add_host:
+      name: '{{ vm_ip.stdout }}'
+      groups: VM
+      ansible_ssh_user: "tamhid"
+      ansible_ssh_private_key_file: "/home/tamhid/.ssh/id_ecdsa"
+    tags: always
+
+  - name: Add VM to DB
+    ansible.builtin.uri:
+      url: https://inventory.tchowdhury.org/vms
+      method: POST
+      body: '{"vmid":"{{ vmid.stdout }}", "name":"{{ vm_name }}", "ip_addr":"{{ vm_ip.stdout }}"}'
+      body_format: json
+      status_code: 201, 500
+    ignore_errors: true
+    # register: _result
+    # until: _result.status == 201
+    # retries: 10
+    # delay: 10
+    delegate_to: 127.0.0.1
+    tags: apply
+
+  - name: Remove VM from DB
+    ansible.builtin.uri:
+      url: "https://inventory.tchowdhury.org/vms/{{ vm_name }}"
+      method: DELETE
+    delegate_to: 127.0.0.1
+    tags: destroy
+
+- name: Configure VM Server
+  hosts: VM
+  become: yes
+  gather_facts: no
+
+  tasks:
+  - name: Wait for connection
+    wait_for_connection:
+      delay: 10
+      timeout: 300
+  - name: Create TFBACUP Folder
+    ansible.builtin.file:
+      path: "/home/TF_FILES"
+      state: directory
+    tags: apply
+
+  - name: Copy Terraform Folder
+    copy:
+      src: "{{ playbook_dir }}/../{{ vm_name }}/"
+      dest: /home/TF_FILES/
+      owner: tamhid
+      group: tamhid
+      mode: '777'
+    tags: apply
+
+  - name: Change hostname
+    hostname:
+      name: "{{ vm_name }}"
+    tags: apply
+  
+  - name: Install docker
+    import_role:
+      name: docker
+    tags: apply
+  
+  - name: Install k8 pre-reqs
+    import_role:
+      name: k8-install
+    tags: apply
+
+  - name: Reboot VM
+    reboot:
+    tags: apply
+  
+  - name: Create a VM folder
+    ansible.builtin.file:
+      path: "{{ playbook_dir }}/../{{ vm_name }}"
+      owner: "tamhid"
+      group: "tamhid"
+      mode: '0777'
+      state: directory
+    delegate_to: 127.0.0.1
+    tags: destroy
+
+  - name: Fetch TF State files
+    synchronize:
+      src: "/home/TF_FILES"
+      dest: "{{ playbook_dir }}/../{{ vm_name }}/"
+      mode: pull
+      owner: true
+    tags: destroy
+
+  - name: Terraform destroy
+    command:
+      chdir: "{{ playbook_dir }}/../{{ vm_name }}/TF_FILES/"
+      cmd: "terraform destroy -auto-approve -lock=false"
+    environment:
+      TF_VAR_proxmox_api_token_id: "{{ lookup('env', 'TF_VAR_proxmox_api_token_id') }}"
+      TF_VAR_proxmox_api_token_secret: "{{ lookup('env', 'TF_VAR_proxmox_api_token_secret') }}"
+    register: terraform_destroy
+    delegate_to: 127.0.0.1
+    tags: destroy
+
+  - name: Terraform apply output
+    debug:
+      msg: "{{ terraform_destroy }}"
+    delegate_to: 127.0.0.1
+    tags: destroy

@@ -16,6 +16,8 @@
     - curl
     - software-properties-common
     - python3-setuptools
+    - python3-pip
+    - pipx
     - gpg
 
 - name: Add Docker GPG apt Key and Repo
@@ -28,6 +30,11 @@
     $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
+- name: Add to docker group
+  shell: |
+    sudo usermod -aG docker {{ ansible_ssh_user }}
+    newgrp docker
+    
 - name: Install docker
   apt:
     name: "{{ item }}"
