@@ -86,15 +86,15 @@
       name: "{{ vm_name }}"
     tags: apply
   
-  - name: Install docker
-    import_role:
-      name: docker
-    tags: apply
+  # - name: Install docker
+  #   import_role:
+  #     name: docker
+  #   tags: apply
   
-  - name: Install k8 pre-reqs
-    import_role:
-      name: k8-install
-    tags: apply
+  # - name: Install k8 pre-reqs
+  #   import_role:
+  #     name: k8-install
+  #   tags: apply
 
   - name: Reboot VM
     reboot:
