@@ -24,7 +24,7 @@
   - name: Install VIM
     shell: |
       DEBIAN_FRONTEND=noninteractive apt-get update && \
-      apt-get install -y vim
+      apt-get install -y vim rsync
     delegate_to:  127.0.0.1
     tags: always
 

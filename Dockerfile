@@ -40,3 +40,6 @@ RUN python3 -m pip config set global.break-system-packages true
 
 RUN python3 -m pip install ansible && \
   rm -rf /root/.cache/pip
+
+
+# TODO: INSTALL HVAC, VIM, RSYNC
