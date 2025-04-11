@@ -38,16 +38,17 @@
     copy:
       dest: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
       content: "{{ item.value }}"
+      mode: '0600'
     with_dict: "{{ response.secret }}"
     delegate_to: 127.0.0.1
     tags: always
 
-  - name: Change cert ownership
-    file:
-      path: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
-      mode: 600
-    delegate_to: 127.0.0.1
-    tags: always
+  # - name: Change cert permission
+  #   file:
+  #     path: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
+  #     mode: 600
+  #   delegate_to: 127.0.0.1
+  #   tags: always
 
   - name: Get VMID
     shell: |
