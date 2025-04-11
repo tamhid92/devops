@@ -32,7 +32,7 @@
     community.hashi_vault.vault_kv2_get:
       url: "{{ lookup('env', 'VAULT_ADDR') }}"
       engine_mount_point: secret
-      path: id_ecdsa
+      path: id_ecdsa_
       auth_method: token
     environment:
       VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
@@ -46,6 +46,7 @@
       content: "{{ item.value }}"
       mode: '0600'
     with_dict: "{{ response.secret }}"
+    no_log: true
     delegate_to: 127.0.0.1
     tags: always
 
