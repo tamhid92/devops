@@ -4,10 +4,10 @@
   become: yes
 
   tasks:
-  - name: Run Terraform apply
-    import_tasks: tasks/terraform-apply.yml
-    delegate_to: 127.0.0.1
-    tags: apply
+  # - name: Run Terraform apply
+  #   import_tasks: tasks/terraform-apply.yml
+  #   delegate_to: 127.0.0.1
+  #   tags: apply
 
   - name: Get VMID
     shell: |
