@@ -25,7 +25,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'proxmox_api', passwordVariable: 'TF_VAR_proxmox_api_token_secret', usernameVariable: 'TF_VAR_proxmox_api_token_id')]) {
                     script{
                         sh "export ANSIBLE_HOST_KEY_CHECKING=False"
-                        sh "ansible-playbook ansible/main.yml -i inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size='${SIZE}'\" --tags apply"
+                        sh "sudo ansible-playbook main.yml -i inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size='${SIZE}'\" --tags apply"
                     }
                 }
             }
