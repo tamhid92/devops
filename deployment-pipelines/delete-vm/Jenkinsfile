@@ -23,10 +23,12 @@ pipeline {
         stage('Main') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'proxmox_api', passwordVariable: 'TF_VAR_proxmox_api_token_secret', usernameVariable: 'TF_VAR_proxmox_api_token_id')]) {
-                    script{
-                        sh "export ANSIBLE_HOST_KEY_CHECKING=False"
-                        sh "echo '${env.WORKSPACE}'"
-                        // sh "ansible-playbook /home/jenkins/agent/workspace/destroy_vm/deployment-pipelines/delete-vm/main.yml -i /home/jenkins/agent/workspace/destroy_vm/deployment-pipelines/delete-vm/inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size=medium\" --tags destroy"
+                    withCredentials([usernamePassword(credentialsId: 'vault-token', passwordVariable: 'VAULT_TOKEN', usernameVariable: 'VAULT_ADDR')])  {
+                        script{
+                            sh "export ANSIBLE_HOST_KEY_CHECKING=False"
+                            sh "echo '${env.WORKSPACE}'"
+                            // sh "'${env.WORKSPACE}'/deployment-pipelines/delete-vm/main.yml -i '${env.WORKSPACE}'/deployment-pipelines/delete-vm/inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size=medium\" --tags destroy"
+                        }
                     }
                 }
             }

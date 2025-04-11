@@ -8,6 +8,38 @@
   #   import_tasks: tasks/terraform-apply.yml
   #   delegate_to: 127.0.0.1
   #   tags: apply
+  - name: Create Certs folder
+    file: 
+      path: "{{ lookup('env', 'WORKSPACE') }}/certs"
+      state: directory
+    tags: always
+  
+  - name: Install HVAC
+    pip:
+      name: hvac
+  
+  - name: Login to Vault
+    community.hashi_vault.vault_kv2_get:
+      url: "{{ lookup('env', 'VAULT_ADDR') }}"
+      engine_mount_point: secret
+      path: id_ecdsa
+      auth_method: token
+    environment:
+      VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
+    register: response
+    delegate_to: 127.0.0.1
+    tags: always
+  
+  - name: Create certs
+    copy:
+      dest: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
+      content: "{{ response.value }}"
+    with_dict: "{{ response }}"
+
+  - name: Change cert ownership
+    file:
+      path: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
+      mode: 600
 
   - name: Get VMID
     shell: |
