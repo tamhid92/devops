@@ -20,6 +20,7 @@
     pip:
       name: hvac
     delegate_to:  127.0.0.1
+    tags: always
   
   - name: Login to Vault
     community.hashi_vault.vault_kv2_get:
