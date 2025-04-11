@@ -21,10 +21,10 @@
       name: hvac
     delegate_to:  127.0.0.1
     tags: always
-  - name: Install vim
-    apt:
-      name: vim
-      state: present
+  - name: Install VIM
+    shell: |
+      DEBIAN_FRONTEND=noninteractive apt-get update && \
+      apt-get install -y vim
     delegate_to:  127.0.0.1
     tags: always
 
