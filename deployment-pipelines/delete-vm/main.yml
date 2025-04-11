@@ -124,8 +124,8 @@
     copy:
       src: "{{ playbook_dir }}/../{{ vm_name }}/"
       dest: /home/TF_FILES/
-      owner: tamhid
-      group: tamhid
+      owner: ubuntu
+      group: ubuntu
       mode: '777'
     tags: apply
 
