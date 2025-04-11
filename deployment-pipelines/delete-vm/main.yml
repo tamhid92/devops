@@ -151,8 +151,8 @@
   - name: Create a VM folder
     ansible.builtin.file:
       path: "{{ playbook_dir }}/../{{ vm_name }}"
-      owner: "tamhid"
-      group: "tamhid"
+      owner: "ubuntu"
+      group: "ubuntu"
       mode: '0777'
       state: directory
     delegate_to: 127.0.0.1
