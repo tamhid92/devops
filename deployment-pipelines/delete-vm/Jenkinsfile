@@ -27,7 +27,7 @@ pipeline {
                         sh "export ANSIBLE_HOST_KEY_CHECKING=False"
                         sh "pwd"
                         sh "ls"
-                        sh "ansible-playbook devops/deployment-pipelines/delete-vm/main.yml -i devops/deployment-pipelines/delete-vm/inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size=medium\" --tags destroy"
+                        sh "ansible-playbook /home/jenkins/agent/workspace/destroy_vm/deployment-pipelines/delete-vm/main.yml -i /home/jenkins/agent/workspace/destroy_vm/deployment-pipelines/delete-vm/inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size=medium\" --tags destroy"
                     }
                 }
             }
