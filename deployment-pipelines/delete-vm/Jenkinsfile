@@ -25,7 +25,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'proxmox_api', passwordVariable: 'TF_VAR_proxmox_api_token_secret', usernameVariable: 'TF_VAR_proxmox_api_token_id')]) {
                     script{
                         sh "export ANSIBLE_HOST_KEY_CHECKING=False"
-                        sh "ansible-playbook deployment-pipelines/delete-vm/main.yml -i deployment-pipelines/delete-vm/inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size=medium\" --tags destroy"
+                        sh "ansible-playbook devops/deployment-pipelines/delete-vm/main.yml -i devops/deployment-pipelines/delete-vm/inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size=medium\" --tags destroy"
                     }
                 }
             }
