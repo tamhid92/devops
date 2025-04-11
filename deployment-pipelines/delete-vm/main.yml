@@ -13,10 +13,12 @@
       path: "{{ lookup('env', 'WORKSPACE') }}/certs"
       state: directory
     tags: always
+    delegate_to: 127.0.0.1
   
   - name: Install HVAC
     pip:
       name: hvac
+    delegate_to:  127.0.0.1
   
   - name: Login to Vault
     community.hashi_vault.vault_kv2_get:
@@ -35,11 +37,15 @@
       dest: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
       content: "{{ response.value }}"
     with_dict: "{{ response }}"
+    delegate_to: 127.0.0.1
+    tags: always
 
   - name: Change cert ownership
     file:
       path: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
       mode: 600
+    delegate_to: 127.0.0.1
+    tags: always
 
   - name: Get VMID
     shell: |
