@@ -37,7 +37,7 @@
   - name: Create certs
     copy:
       dest: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
-      content: "{{ response.value }}"
+      content: "{{ item.value }}"
     with_dict: "{{ response.secret }}"
     delegate_to: 127.0.0.1
     tags: always
