@@ -89,11 +89,13 @@
   - name: Install docker
     import_role:
       name: docker
+    become: yes
     tags: apply
   
   - name: Install k8 pre-reqs
     import_role:
       name: k8-install
+    become: yes
     tags: apply
 
   - name: Reboot VM
