@@ -1,0 +1,26 @@
+- name: Create Certs folder
+  file: 
+    path: "{{ lookup('env', 'WORKSPACE') }}/certs"
+    state: directory
+
+- name: Get cert from Vault
+  community.hashi_vault.vault_kv2_get:
+    url: "{{ lookup('env', 'VAULT_ADDR') }}"
+    engine_mount_point: secret
+    path: id_ecdsa_
+    auth_method: token
+  environment:
+    VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
+  register: response
+
+- name: Create certs
+  copy:
+    dest: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
+    content: "{{ item.value }}"
+    mode: '0600'
+  with_dict: "{{ response.secret }}"
+  no_log: true
+
+- name: Clean up Cert File
+  shell: |
+    vim --clean {{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa -c wq

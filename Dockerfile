@@ -32,14 +32,11 @@ ENV ANSIBLE_HOST_KEY_CHECKING=false
 ENV ANSIBLE_FORCE_COLOR=true
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-  apt-get install -y gnupg2 python3-pip sshpass git openssh-client curl software-properties-common && \
+  apt-get install -y gnupg2 python3-pip sshpass git openssh-client curl software-properties-common vim rsync && \
   rm -rf /var/lib/apt/lists/* && \
   apt-get clean
 
 RUN python3 -m pip config set global.break-system-packages true
 
-RUN python3 -m pip install ansible && \
+RUN python3 -m pip install ansible hvac && \
   rm -rf /root/.cache/pip
-
-
-# TODO: INSTALL HVAC, VIM, RSYNC
