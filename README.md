@@ -1,85 +1,177 @@
-# DevOps Projects Repository
+# 🧪 DevOps HomeLab on Proxmox
 
-## Overview
-This repository is a collection of various scripts and projects that I am currently working on. These projects are developed and tested in my home-lab environment, which consists of a mix of Raspberry Pi and desktop PC hardware. The infrastructure is designed to support a multi-environment DevOps workflow, incorporating CI/CD pipelines, automation, containerization, and infrastructure as code (IaC).
+Welcome to my **DevOps HomeLab**, a fully automated, production-grade infrastructure built from the ground up to showcase my skills in **infrastructure automation**, **Kubernetes**, **CI/CD**, and **observability**. Everything runs on local virtual machines hosted in **Proxmox**, with complete **Infrastructure as Code (IaC)** using **Terraform** and **Ansible**.
 
-## Home Lab Infrastructure
-### Hardware:
-- **Raspberry Pi** (Hosts key services and automation tools)
-- **Desktop PC** (Running both Windows and WSL for multi-environment support)
+---
 
-### Raspberry Pi:
-- **Jenkins Server**
-  - Configured with two worker nodes:
-    - **Windows Node:** Desktop PC running Windows
-    - **Linux Node:** Desktop PC running WSL (Windows Subsystem for Linux), enabling Ansible execution
-- **HashiCorp Vault Server** (Running as a Docker container)
-  - Set up to be accessible from any device within my network for centralized secrets management
+## 🛠️ Tech Stack Overview
 
-### Desktop PC:
-- Configured with both Windows and WSL environments to facilitate hybrid workflows
-- **Port forwarding** is enabled to allow SSH access to WSL from external devices
-- **Virtualization Support:**
-  - Runs **VMWare Workstation Pro** and **VirtualBox** to create and manage virtual machines on demand
-- **Essential DevOps utilities installed**, such as **PGAdmin** for PostgreSQL database management
+| Area                | Technology Stack                                                                 |
+|---------------------|-----------------------------------------------------------------------------------|
+| Hypervisor          | [Proxmox VE](https://www.proxmox.com/proxmox-ve)                                 |
+| Infrastructure IaC  | [Terraform](https://www.terraform.io/), [Ansible](https://www.ansible.com/)      |
+| VM Base Image       | Custom-built Ubuntu cloud-init compatible image                                  |
+| Container Orchestration | [Kubernetes](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/)  |
+| Containers & Apps   | [Docker](https://www.docker.com/), Custom apps, [Vault](https://www.vaultproject.io/), [Jenkins](https://www.jenkins.io/) |
+| Monitoring & Observability | [Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/) via [Helm Charts](https://helm.sh/) |
+| CI/CD Pipelines     | [Jenkins](https://www.jenkins.io/) with K8s agents                |
+| DNS & Reverse Proxy | [Cloudflare](https://www.cloudflare.com/), [Nginx Proxy Manager](https://nginxproxymanager.com/) |
+| Secrets Management  | [Vault](https://www.vaultproject.io/)                                             |
+| Database            | [PostgreSQL](https://www.postgresql.org/)                                        |
 
-## Jenkins CI/CD Pipeline
-The Jenkins pipeline is set up to run in a multinode configuration and performs the following tasks:
+---
 
-1. **Windows Node:**
-   - Starts the **VMWare Workstation Pro REST API**
-   - Executes a Python script to generate an **Ansible host file**, which:
-     - Retrieves the VM's IP address using the VMWare REST API
-     - Fetches necessary passwords and credentials from **HashiCorp Vault**
+## 🧱 Architecture Diagram
 
-2. **WSL Node:**
-   - Runs Ansible playbooks to configure VMs on **VMWare**
-     - Installs essential software (Docker, MicroK8s, and other dependencies)
-     - Copies necessary configuration files and certificates from **HashiCorp Vault**
-     - Deploys Kubernetes workloads, including:
-       - **PostgreSQL database** (deployed as a Kubernetes pod)
-       - **Resume React app** (containerized)
-       - **ManUtd Flask application** (containerized)
+```mermaid
+graph TD
+    CF[Cloudflare DNS] --> RP["Reverse Proxy (Nginx Proxy Manager)"]
+    RP --> AppHost
+    RP --> Prometheus
+    RP --> Grafana
+    RP --> Vault
+    RP --> Jenkins
+    RP --> DevServer
 
-## Ansible Automation
-The Ansible playbooks automate infrastructure provisioning and application deployment with the following key features:
-- **Custom Role for Docker Installation**
-- **MicroK8s Deployment**
-- **Kubernetes-based application deployment:**
-  - Deploys a pod for the ManUtd Flask app
-  - Deploys the resume React app as a Docker container
-  - Deploys PostgreSQL as a Kubernetes pod
+    subgraph K8s Cluster
+        Prometheus
+        Grafana
+        K8Master[K8s Master Node]
+        DBServer[Postgres DB Server]
+        AppHost
+        DevServer
+    end
 
-## ManUtd Flask Application
-A Flask-based web application that provides information on **Manchester United fixtures**. The application:
-- Downloads a **calendar file** containing match schedules
-- Scrapes and processes the fixture data
-- Stores parsed data in a **PostgreSQL database**
-- Exposes an API to retrieve:
-  - Upcoming matches
-  - Complete fixture list
-- Both the Flask app and PostgreSQL database are containerized using **Docker**
+    AppHost --> Jenkins
+    AppHost --> Vault
+    AppHost --> Apps[Dockerized Apps]
+    K8Master -->|Control Plane| K8Nodes
+    Jenkins -->|Dynamic Agents| K8Pods
+    DBServer -->|PostgreSQL| Apps
+```
 
-## Resume React Application
-- A React-based web application that hosts my resume
-- Packaged as a Docker container for easy deployment and scalability
+---
 
-## VirtualBox Automation
-- `template-powershell.py`: A Python script that generates a **PowerShell script** to deploy a VM in **VirtualBox** using the `VBoxManage` CLI tool
+## 🧩 Virtual Machines & Roles
 
-## Linux From Scratch (LFS) Project
-I have completed a project where I built a Linux distribution from scratch. One of the most tedious and repetitive parts of this process involves manually installing all the necessary packages. To streamline this, I automated the installation by:
-- Extracting a list of all required packages
-- Scraping the necessary commands from the LFS website
-- Compiling them into a comprehensive Bash script to automate the installation process - **`LFS/scrapeLFS.py`**
+Every Proxmox VM in the environment is built from a **custom Ubuntu cloud image**, optimized for automation and security. Provisioning and configuration is entirely handled via **Terraform** and **Ansible**.
 
-## Directory Structure
-- **`lib/`** - Contains utility libraries for interacting with **HashiCorp Vault** and **VMWare APIs**
-- **`templates/`** - Stores template files for:
-  - Generating **Ansible inventory files**
-  - Creating **PowerShell scripts** for VirtualBox VM deployment
+### `k8master` — Kubernetes Control Plane  
+- Hosts the K8s control components (API Server, Scheduler, Controller Manager)
+- Manages worker nodes and scheduling of workloads
 
-## Conclusion
-This repository serves as an evolving collection of my DevOps projects, demonstrating my ability to build, automate, and manage infrastructure using industry-standard tools such as **Jenkins, Ansible, Kubernetes, Docker, and HashiCorp Vault**. My home lab environment allows me to experiment with real-world DevOps scenarios, bridging Windows and Linux ecosystems for a comprehensive infrastructure setup.
+### `db-server` — PostgreSQL  
+- Centralized database for all services and apps
+- To be upgraded to **HA multi-node** setup
 
-Feel free to explore and contribute!
+### `apphost` — Application Host  
+- Hosts containerized applications with Docker  
+- Runs key services:
+  - **Vault** for secret management  
+  - **Jenkins** with **Kubernetes-based dynamic build agents**
+  - Custom-built Docker containers for hosted applications
+
+### `develop` — Development Server  
+- Sandbox environment for coding, testing, and DevOps experiments
+
+### `reverse-proxy` — Nginx Proxy Manager  
+- Public-facing reverse proxy with SSL termination
+- Auto-configured to route Cloudflare traffic to internal services
+
+---
+
+## ⚙️ Infrastructure Automation
+
+- **Terraform** provisions VMs in Proxmox using cloud-init
+- **Ansible** configures OS, Docker, K8s, monitoring, apps, and more
+- Role-based playbooks for:
+  - Kubernetes setup (kubeadm)
+  - Docker & containerized services
+  - Prometheus + Grafana via Helm charts
+  - CI/CD and Vault integration
+
+---
+
+## 🚀 Jenkins with Kubernetes Agents
+
+- Jenkins runs on `apphost` and uses Kubernetes to dynamically provision **build agents as pods**
+- Each agent pod is based on a **custom Docker image** with required tools (Docker CLI, Ansible, Python, etc.)
+- Pipelines build, test, and deploy apps and infrastructure using GitHub integration
+
+```yaml
+# Jenkins Kubernetes plugin configuration snippet
+kubernetes {
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: shell
+                    image: tamhid/jenkins-agent:latest
+                    command:
+                    - sleep
+                    args:
+                    - infinity
+            '''
+            defaultContainer 'shell'
+            retries 2
+        }
+```
+
+---
+
+## 📈 Monitoring & Observability
+
+- **Prometheus** and **Grafana** are deployed via official **Helm charts**
+- Prometheus scrapes metrics from nodes, pods, and services
+- Grafana provides dashboards for:
+  - Node health
+  - K8s cluster status
+  - CI/CD metrics
+- All configured automatically via Ansible
+
+---
+
+## 🔐 Secrets & DNS Automation
+
+- **Vault** stores application secrets and TLS certs securely
+- **Cloudflare** manages external DNS
+- **Nginx Proxy Manager** acts as the gateway for incoming traffic
+
+### 🔄 Reverse Proxy Automation Challenge
+
+Since **Nginx Proxy Manager** lacks a usable API, I wrote a **custom Python script** to automate DNS + SSL record creation:
+- Directly inserts reverse proxy config data into the **SQLite** DB
+- Generates config files from a Jinja2 template
+- Restarts NPM service to apply changes
+
+➡️ [View script here](./deployment-pipelines/deploy-applications/ansible/python/update_reverse_proxy.py)
+
+---
+
+## 🧭 Future Improvements
+
+- ⚙️ Deploy **PostgreSQL in multi-node HA mode** with failover  
+- 🔄 Integrate **GitOps** tooling (e.g., ArgoCD or Flux)  
+- 🔁 Implement secrets auto-rotation in Vault  
+- 📦 Build a private container registry for internal images  
+- 📈 Add alerting with Alertmanager + Grafana OnCall
+
+---
+
+## 📸 Screenshots (coming soon)
+
+> [ ] Jenkins pipelines view  
+> [ ] Grafana dashboards  
+> [ ] Vault UI  
+> [ ] Prometheus metrics explorer  
+
+---
+
+
+## 🙌 Contributions & Feedback
+
+This project is my personal lab and a continuous learning playground.  
+Feel free to open issues or suggestions — I'd love to connect with other engineers working on homelabs, automation, and cloud-native tooling.
+
+---
