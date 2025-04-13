@@ -40,3 +40,6 @@ RUN python3 -m pip config set global.break-system-packages true
 
 RUN python3 -m pip install ansible hvac && \
   rm -rf /root/.cache/pip
+
+COPY jenkins-slave /usr/local/bin/jenkins-slave
+ENTRYPOINT ["jenkins-slave"]
