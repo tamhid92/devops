@@ -149,6 +149,32 @@ Since **Nginx Proxy Manager** lacks a usable API, I wrote a **custom Python scri
 
 ---
 
+# 🧰 Custom-Built Applications
+
+I’ve developed and deployed several apps to showcase full-stack and DevOps skills. These are containerized, automatically deployed via Jenkins, and hosted on the `apphost` server.
+
+### 📄 [Resume App](#)  
+A sleek, single-page **React** application that displays my resume.  
+- Built with React and styled with Tailwind CSS
+- Deployed as a Docker container
+- Available via the reverse proxy with SSL
+
+### 🧾 [Inventory App](#)  
+A **Flask API** that returns VM metadata (VMID, name, IP) for all Proxmox VMs.  
+- Uses **PostgreSQL** to persist VM info  
+- Queries the Proxmox API for live data  
+- Deployed as a microservice and used for debugging/automation
+
+### 📅 [Man Utd Fixture App](#)  
+Downloads and parses Manchester United’s fixture calendar file (.ics), stores it in PostgreSQL, and exposes a clean **REST API** using **Flask**.  
+- Python parser for `.ics` files  
+- Flask API with search/filter endpoints  
+- Deployed as a Docker container and updated via CI
+
+➡️ All apps run in Docker containers and are deployed to the **apphost** server via Jenkins pipelines.
+
+
+
 ## 🧭 Future Improvements
 
 - ⚙️ Deploy **PostgreSQL in multi-node HA mode** with failover  
