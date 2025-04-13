@@ -149,7 +149,7 @@ Since **Nginx Proxy Manager** lacks a usable API, I wrote a **custom Python scri
 
 ---
 
-# 🧰 Custom-Built Applications
+## 🧰 Custom-Built Applications
 
 I’ve developed and deployed several apps to showcase full-stack and DevOps skills. These are containerized, automatically deployed via Jenkins, and hosted on the `apphost` server.
 
@@ -173,6 +173,24 @@ Downloads and parses Manchester United’s fixture calendar file (.ics), stores 
 
 ➡️ All apps run in Docker containers and are deployed to the **apphost** server via Jenkins pipelines.
 
+---
+
+## 🔧 Python Libraries & Automation Scripts
+
+To streamline DevOps workflows and integrate third-party services, I’ve created a set of reusable Python libraries:
+
+### 🛡️ Vault API Wrapper
+
+A Python module that interacts with **HashiCorp Vault** via its REST API:
+
+- Authenticate using token
+- Retrieve secrets by path
+- Add/update secrets programmatically
+- Used across CI pipelines and internal applications to manage sensitive data
+
+➡️ [View script here](./lib/hvac_lib.py)
+
+The libraries are modular and designed for reuse across the homelab ecosystem and Jenkins jobs.
 
 
 ## 🧭 Future Improvements
