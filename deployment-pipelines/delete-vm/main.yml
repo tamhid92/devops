@@ -5,29 +5,14 @@
   gather_facts: no
 
   tasks:
-  # - name: Run Terraform apply
-  #   import_tasks: tasks/terraform-apply.yml
-  #   delegate_to: 127.0.0.1
-  #   tags: apply
+
   - name: Create Certs folder
     file: 
       path: "{{ lookup('env', 'WORKSPACE') }}/certs"
       state: directory
     tags: always
     delegate_to: 127.0.0.1
-  
-  - name: Install HVAC
-    pip:
-      name: hvac
-    delegate_to:  127.0.0.1
-    tags: always
-  - name: Install VIM
-    shell: |
-      DEBIAN_FRONTEND=noninteractive apt-get update && \
-      apt-get install -y vim rsync
-    delegate_to:  127.0.0.1
-    tags: always
-
+    
   - name: Login to Vault
     community.hashi_vault.vault_kv2_get:
       url: "{{ lookup('env', 'VAULT_ADDR') }}"
