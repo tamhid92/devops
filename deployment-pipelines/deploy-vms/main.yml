@@ -8,6 +8,11 @@
     import_tasks: tasks/terraform-apply.yml
     delegate_to: 127.0.0.1
     tags: apply
+  
+  - name: Create cert
+    import_tasks: tasks/create_cert.yml
+    delegate_to: 127.0.0.1
+    tags: apply
 
   - name: Get VMID
     shell: |
