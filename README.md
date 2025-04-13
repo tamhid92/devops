@@ -54,7 +54,7 @@ graph TD
 
 ## 🧩 Virtual Machines & Roles
 
-Every Proxmox VM in the environment is built from a **custom Ubuntu cloud image**, optimized for automation and security. Provisioning and configuration is entirely handled via **Terraform** and **Ansible**.
+Every Proxmox VM in the environment is built from a **custom Ubuntu cloud image**, optimized for automation and security. Provisioning and configuration is entirely handled via **Terraform** and **Ansible**. All infrastructure is declarative and reproducible, which speeds up the deployment process.
 
 ### `k8master` — Kubernetes Control Plane  
 - Hosts the K8s control components (API Server, Scheduler, Controller Manager)
@@ -152,18 +152,16 @@ Since **Nginx Proxy Manager** lacks a usable API, I wrote a **custom Python scri
 ## 🧭 Future Improvements
 
 - ⚙️ Deploy **PostgreSQL in multi-node HA mode** with failover  
-- 🔄 Integrate **GitOps** tooling (e.g., ArgoCD or Flux)  
 - 🔁 Implement secrets auto-rotation in Vault  
 - 📦 Build a private container registry for internal images  
-- 📈 Add alerting with Alertmanager + Grafana OnCall
 
 ---
 
 ## 📸 Screenshots (coming soon)
 
-> [ ] Jenkins pipelines view  
+> [ (./screenshots/jenkins_sc.png) ] Jenkins pipelines view  
 > [ ] Grafana dashboards  
-> [ ] Vault UI  
+> [ (./screenshots/vault_sc.png) ] Vault UI  
 > [ ] Prometheus metrics explorer  
 
 ---
