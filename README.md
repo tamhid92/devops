@@ -159,9 +159,9 @@ Since **Nginx Proxy Manager** lacks a usable API, I wrote a **custom Python scri
 
 ## 📸 Screenshots (coming soon)
 
-> [ (./screenshots/jenkins_sc.png) ] Jenkins pipelines view  
+> [<img width="1367" alt="Image" src="./screenshots/jenkins_sc.png" />] Jenkins pipelines view  
 > [ ] Grafana dashboards  
-> [ (./screenshots/vault_sc.png) ] Vault UI  
+> [<img width="1367" alt="Image" src="./screenshots/vault_sc.png" />] Vault UI  
 > [ ] Prometheus metrics explorer  
 
 ---
