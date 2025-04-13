@@ -10,6 +10,10 @@ pipeline {
                   containers:
                   - name: shell
                     image: tamhid/jenkins-agent:latest
+                    command:
+                    - sleep
+                    args:
+                    - infinity
             '''
             defaultContainer 'shell'
             retries 2
