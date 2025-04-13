@@ -2,6 +2,7 @@
 - name: Build/Destroy a new VM
   hosts: pve
   become: yes
+  gather_facts: no
 
   tasks:
   - name: Run Terraform apply
