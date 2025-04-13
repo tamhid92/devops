@@ -26,7 +26,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'vault-token', passwordVariable: 'VAULT_TOKEN', usernameVariable: 'VAULT_ADDR')])  {
                         script{
                             sh "export ANSIBLE_HOST_KEY_CHECKING=False"
-                            sh "ansible-playbook main.yml -i inventory/host.ini -vvv --extra-vars \"vm_name='${NAME}' vm_size='${SIZE}'\" --tags apply"
+                            sh "ansible-playbook '${env.WORKSPACE}'/deployment-pipelines/deploy-vm/main.yml -i '${env.WORKSPACE}'/deployment-pipelines/deploy-vm/inventory/host.ini --extra-vars \"vm_name='${NAME}' vm_size='${SIZE}'\" --tags apply"
                         }
                     }
                 }
