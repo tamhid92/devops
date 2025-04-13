@@ -204,9 +204,8 @@ The libraries are modular and designed for reuse across the homelab ecosystem an
 ## 📸 Screenshots (coming soon)
 
 > <img width="1367" alt="Image" src="./screenshots/jenkins_sc.png" /> Jenkins pipelines view  
-> [ ] Grafana dashboards  
-> <img width="1367" alt="Image" src="./screenshots/vault_sc.png" /> Vault UI  
-> [ ] Prometheus metrics explorer  
+
+> <img width="1367" alt="Image" src="./screenshots/vault_sc.png" /> Vault UI
 
 ---
 
