@@ -1,5 +1,6 @@
 def NAME = "${params.VM_NAME}"
 def SIZE = "${params.VM_SIZE}"
+def OPERATION = "${params.OPERATION}"
 pipeline {
     agent {
         kubernetes {
@@ -26,7 +27,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'vault-token', passwordVariable: 'VAULT_TOKEN', usernameVariable: 'VAULT_ADDR')])  {
                         script{
                             sh "export ANSIBLE_HOST_KEY_CHECKING=False"
-                            sh "ansible-playbook '${env.WORKSPACE}'/deployment-pipelines/deploy-vms/main.yml -i '${env.WORKSPACE}'/deployment-pipelines/deploy-vms/inventory/host.ini --extra-vars \"vm_name='${NAME}' vm_size='${SIZE}'\" --tags apply"
+                            sh "ansible-playbook '${env.WORKSPACE}'/deployment-pipelines/deploy-vms/main.yml -i '${env.WORKSPACE}'/deployment-pipelines/deploy-vms/inventory/host.ini --extra-vars \"vm_name='${NAME}' vm_size='${SIZE}'\" --tags '${OPERATION}'"
                         }
                     }
                 }
