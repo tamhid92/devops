@@ -13,7 +13,7 @@
   - name: Create cert
     import_tasks: tasks/create_cert.yml
     delegate_to: 127.0.0.1
-    tags: apply
+    tags: always
 
   - name: Get VMID
     shell: |
