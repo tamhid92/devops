@@ -1,0 +1,3 @@
+---
+- name: Run K8 stuff
+  import_tasks: kubernates.yml

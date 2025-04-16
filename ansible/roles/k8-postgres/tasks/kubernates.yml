@@ -1,0 +1,65 @@
+---
+- name: Create Ansible dir
+  file:
+    path: /home/ubuntu/ansible
+    state: directory
+
+- name: Break Python virt env
+  shell: |
+    python3 -m pip config set global.break-system-packages true
+
+- name: Install HVAC
+  pip:
+    name: hvac
+    state: present
+
+- name: Copy all K8 manifest files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/home/ubuntu/ansible"
+  with_fileglob:
+    - "files/*"
+
+- name: Login to Vault
+  community.hashi_vault.vault_kv2_get:
+    url: "{{ lookup('env', 'VAULT_ADDR') }}"
+    engine_mount_point: secret
+    path: postgres
+    auth_method: token
+  environment:
+    VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
+  register: response
+
+
+- name: Create postgres configmaps
+  copy:
+    dest: "/home/ubuntu/ansible/postgres-configmaps.yml"
+    content: |
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: postgres-config
+        labels:
+          app: postgres
+      data:
+        POSTGRES_DB: postgres
+        POSTGRES_USER: {{ item.key }}
+        POSTGRES_PASSWORD: {{ item.value }}
+  with_dict: "{{ response.secret }}"
+
+- name: Run kubectl cmds
+  shell: |
+    kubectl apply -f /home/ubuntu/ansible/postgres-configmaps.yml
+    kubectl apply -f /home/ubuntu/ansible/postgres-storage.yml
+    kubectl apply -f /home/ubuntu/ansible/postgres-deployment.yml
+    kubectl apply -f /home/ubuntu/ansible/postgres-service.yml
+
+- name: Get POD port
+  shell: |
+    kubectl get svc postgres -o json | jq -r '.spec' | jq -r '.ports[0]' | jq -r '.nodePort'
+  register: portnum
+
+- name: Portnum
+  debug:
+    msg: "{{ portnum.stdout }}"
+
