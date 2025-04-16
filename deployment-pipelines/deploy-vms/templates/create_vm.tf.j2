@@ -2,7 +2,7 @@ locals {
   size = {
     "small" = {
       cores   = 2
-      memory  = 2048
+      memory  = 4096
       disk    = "50G"
     }
     "medium" = {
@@ -55,7 +55,7 @@ resource "proxmox_vm_qemu" "new_vm" {
     #     }
     # }
     disk {
-      slot = "virtio0"
+      slot = "scsi0"
       storage = "local-lvm"
       size = local.size["{{vm_size}}"].disk
       backup = false

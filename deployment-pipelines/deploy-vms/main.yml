@@ -36,8 +36,9 @@
     ansible.builtin.add_host:
       name: '{{ vm_ip.stdout }}'
       groups: VM
-      ansible_ssh_user: "tamhid"
-      ansible_ssh_private_key_file: "{{ lookup('env', 'WORKSPACE') }}/certs/id_ecdsa"
+      ansible_ssh_user: "ubuntu"
+      ansible_ssh_private_key_file: "~/.ssh/id_ecdsa"
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
     tags: always
 
   - name: Add VM to DB
@@ -59,6 +60,7 @@
     ansible.builtin.uri:
       url: "https://inventory.tchowdhury.org/vms/{{ vm_name }}"
       method: DELETE
+    ignore_errors: true
     delegate_to: 127.0.0.1
     tags: destroy
 
@@ -82,8 +84,8 @@
     copy:
       src: "{{ playbook_dir }}/../{{ vm_name }}/"
       dest: /home/TF_FILES/
-      owner: tamhid
-      group: tamhid
+      owner: ubuntu
+      group: ubuntu
       mode: '777'
     tags: apply
 
@@ -111,8 +113,8 @@
   - name: Create a VM folder
     ansible.builtin.file:
       path: "{{ playbook_dir }}/../{{ vm_name }}"
-      owner: "tamhid"
-      group: "tamhid"
+      owner: "ubuntu"
+      group: "ubuntu"
       mode: '0777'
       state: directory
     delegate_to: 127.0.0.1

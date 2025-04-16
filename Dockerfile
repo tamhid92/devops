@@ -2,7 +2,7 @@ FROM ubuntu:24.04
 
 # Make the version configurable
 # https://github.com/hashicorp/terraform/releases
-ARG TERRAFORM_VERSION=1.10.4
+ARG TERRAFORM_VERSION=1.11.4
 
 LABEL maintainer="tamhidchowdhury@gmail.com" \
     org.label-schema.description="Jenkins Agent" \
@@ -40,6 +40,3 @@ RUN python3 -m pip config set global.break-system-packages true
 
 RUN python3 -m pip install ansible hvac && \
   rm -rf /root/.cache/pip
-
-COPY jenkins-slave /usr/local/bin/jenkins-slave
-ENTRYPOINT ["jenkins-slave"]
