@@ -9,7 +9,7 @@ def get_db_connection():
         db_user, db_pass = get_vault('secret/data/postgres')
         conn = psycopg2.connect(
             host="192.168.68.62",
-            port=30384,
+            port=30727,
             database="postgres",
             user=db_user,
             password=db_pass

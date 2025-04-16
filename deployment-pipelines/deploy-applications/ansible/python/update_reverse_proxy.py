@@ -6,7 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", required=True, type=str)
 parser.add_argument("-p", "--port", required=True, type=int)
-parser.add_argument("-ip","--ipaddress", type=str, default="192.168.68.73")
+parser.add_argument("-ip","--ipaddress", type=str, default="192.168.68.78")
 
 args = parser.parse_args()
 app_name = args.name
@@ -14,11 +14,11 @@ app_port = args.port
 ip_address = args.ipaddress
 
 
-BASE_DIR = "/home/tamhid/ansible"
+BASE_DIR = "/home/ubuntu/ansible"
 DB_PATH = os.path.join(BASE_DIR, "database.sqlite")
 JSON_PATH = os.path.join(BASE_DIR, "app_vars.json")
-TEMPLATE_PATH = os.path.join(BASE_DIR, "nginix-conf.conf.j2")
-NGNIX_FILE_PATH = "/home/tamhid/nginix/data/nginx/proxy_host"
+TEMPLATE_PATH = os.path.join(BASE_DIR, "ngnix-conf.conf.j2")
+NGNIX_FILE_PATH = "/home/ubuntu/ngnix/data/nginx/proxy_host"
 
 def deploy_app():
 
@@ -36,7 +36,7 @@ def deploy_app():
         sql_data = (
             id_, str(today), str(today), '1', '0',
             f'''["{app_name}.tchowdhury.org"]''',
-            ip_address, app_port, '0', '11', '1', '0', '1', '',
+            ip_address, app_port, '0', '5', '1', '0', '1', '',
             '{"letsencrypt_agree":false,"dns_challenge":false,"nginx_online":true,"nginx_err":null}',
             '0', '1', 'http', '1', '[]', '0', '0'
         )
