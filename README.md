@@ -40,6 +40,8 @@ graph TD
     k8master --> Apps[Dockerized Apps]
     Jenkins -->|Dynamic Agents| K8Pods
     k8master -->|PostgreSQL| Apps
+    dns-server --> pihole
+    develop
 ```
 
 ---
