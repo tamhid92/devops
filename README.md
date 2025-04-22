@@ -27,27 +27,19 @@ Welcome to my **DevOps HomeLab**, a fully automated, production-grade infrastruc
 graph TD
     CF[Cloudflare DNS] --> RP["Reverse Proxy (Nginx Proxy Manager)"]
     RP --> k8master
-    RP --> Prometheus
-    RP --> Grafana
-    RP --> Vault
-    RP --> Jenkins
-    RP --> DevServer
 
     subgraph K8s Cluster
-        Prometheus
-        Grafana
-        k8Master[K8s Master Node]
-        DBServer[Postgres DB Server]
+        k8master
         k8worker1
         k8worker2
     end
 
     k8master --> Jenkins
     k8master --> Vault
+    k8master --> |Prometheus|Grafana
     k8master --> Apps[Dockerized Apps]
-    k8Master -->|Control Plane| K8Nodes
     Jenkins -->|Dynamic Agents| K8Pods
-    DBServer -->|PostgreSQL| Apps
+    k8master -->|PostgreSQL| Apps
 ```
 
 ---
