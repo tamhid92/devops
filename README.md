@@ -109,7 +109,7 @@ kubernetes {
 
 ## 📈 Monitoring & Observability
 
-- **Prometheus** and **Grafana** are deployed via **[docker-compose](/ansible/files/vault/docker-compose.yml)**
+- **Prometheus** and **Grafana** are deployed via **[docker-compose](/ansible/files/prom-graf/docker-compose.yml)**
 - Prometheus scrapes metrics from nodes, pods, and services
 - Created custom Python exporter that scrapes data from the nodes
 - Grafana provides dashboards for:
