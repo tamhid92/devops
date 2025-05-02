@@ -53,13 +53,6 @@ Every Proxmox VM in the environment is built from a **custom Ubuntu cloud image*
 ### `k8master` — Kubernetes Control Plane  
 - Hosts the K8s control components (API Server, Scheduler, Controller Manager)
 - Manages worker nodes and scheduling of workloads
-
-### `db-server` — PostgreSQL  
-- Centralized database for all services and apps
-- To be upgraded to **HA multi-node** setup
-
-### `apphost` — Application Host  
-- Hosts containerized applications with Docker  
 - Runs key services:
   - **Vault** for secret management  
   - **Jenkins** with **Kubernetes-based dynamic build agents**
@@ -88,7 +81,7 @@ Every Proxmox VM in the environment is built from a **custom Ubuntu cloud image*
 
 ## 🚀 Jenkins with Kubernetes Agents
 
-- Jenkins runs on `apphost` and uses Kubernetes to dynamically provision **build agents as pods**
+- Jenkins runs on `k8master` and uses Kubernetes to dynamically provision **build agents as pods**
 - Each agent pod is based on a **custom Docker image** with required tools (Docker CLI, Ansible, Python, etc.)
 - Pipelines build, test, and deploy apps and infrastructure using GitHub integration
 
@@ -116,7 +109,7 @@ kubernetes {
 
 ## 📈 Monitoring & Observability
 
-- **Prometheus** and **Grafana** are deployed via official **Helm charts**
+- **Prometheus** and **Grafana** are deployed via **[docker-compose](/ansible/files/vault/docker-compose.yml)**
 - Prometheus scrapes metrics from nodes, pods, and services
 - Created custom Python exporter that scrapes data from the nodes
 - Grafana provides dashboards for:
@@ -140,13 +133,13 @@ Since **Nginx Proxy Manager** lacks a usable API, I wrote a **custom Python scri
 - Generates config files from a Jinja2 template
 - Restarts NPM service to apply changes
 
-➡️ [View script here](./deployment-pipelines/deploy-applications/ansible/python/update_reverse_proxy.py)
+➡️ [View script here](/ansible/scripts/update_reverse_proxy.py)
 
 ---
 
 ## 🧰 Custom-Built Applications
 
-I’ve developed and deployed several apps to showcase full-stack and DevOps skills. These are containerized, automatically deployed via Jenkins, and hosted on the `apphost` server.
+I’ve developed and deployed several apps to showcase full-stack and DevOps skills. These are containerized, automatically deployed via Jenkins, and hosted on the `k8master` server.
 
 ### 🧾 [Inventory App](/ansible/applications/inventory/)  
 A **Flask API** that returns VM metadata (VMID, name, IP) for all Proxmox VMs.  
