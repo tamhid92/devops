@@ -17,8 +17,10 @@
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/home/ubuntu/ansible"
-  with_fileglob:
-    - "files/*"
+  with_items:
+    - "files/postgres-deployment.yml"
+    - "files/postgres-service.yml"
+    - "files/postgres-storage.yml"
 
 - name: Login to Vault
   community.hashi_vault.vault_kv2_get:
