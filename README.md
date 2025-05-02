@@ -118,10 +118,11 @@ kubernetes {
 
 - **Prometheus** and **Grafana** are deployed via official **Helm charts**
 - Prometheus scrapes metrics from nodes, pods, and services
+- Created custom Python exporter that scrapes data from the nodes
 - Grafana provides dashboards for:
   - Node health
   - K8s cluster status
-  - CI/CD metrics
+  - API metrics
 - All configured automatically via Ansible
 
 ---
@@ -146,12 +147,6 @@ Since **Nginx Proxy Manager** lacks a usable API, I wrote a **custom Python scri
 ## 🧰 Custom-Built Applications
 
 I’ve developed and deployed several apps to showcase full-stack and DevOps skills. These are containerized, automatically deployed via Jenkins, and hosted on the `apphost` server.
-
-### 📄 [Resume App](#)  
-A sleek, single-page **React** application that displays my resume.  
-- Built with React and styled with Tailwind CSS
-- Deployed as a Docker container
-- Available via the reverse proxy with SSL
 
 ### 🧾 [Inventory App](#)  
 A **Flask API** that returns VM metadata (VMID, name, IP) for all Proxmox VMs.  
@@ -189,17 +184,20 @@ The libraries are modular and designed for reuse across the homelab ecosystem an
 
 ## 🧭 Future Improvements
 
-- ⚙️ Deploy **PostgreSQL in multi-node HA mode** with failover  
 - 🔁 Implement secrets auto-rotation in Vault  
 - 📦 Build a private container registry for internal images  
 
 ---
 
-## 📸 Screenshots (coming soon)
+## 📸 Screenshots
 
 > <img width="1367" alt="Image" src="./screenshots/jenkins_sc.png" /> Jenkins pipelines view  
 
 > <img width="1367" alt="Image" src="./screenshots/vault_sc.png" /> Vault UI
+
+> <img width="1367" alt="Image" src="/screenshots/grafana.PNG" /> Grafana UI
+
+> <img width="1367" alt="Image" src="/screenshots/stress-test.PNG" /> Stress Test
 
 ---
 
