@@ -13,7 +13,7 @@ Welcome to my **DevOps HomeLab**, a fully automated, production-grade infrastruc
 | VM Base Image       | Custom-built Ubuntu cloud-init compatible image                                  |
 | Container Orchestration | [Kubernetes](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/)  |
 | Containers & Apps   | [Docker](https://www.docker.com/), Custom apps, [Vault](https://www.vaultproject.io/), [Jenkins](https://www.jenkins.io/) |
-| Monitoring & Observability | [Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/) via [Helm Charts](https://helm.sh/) |
+| Monitoring & Observability | [Prometheus](https://prometheus.io/) + [Grafana](https://grafana.com/)    |
 | CI/CD Pipelines     | [Jenkins](https://www.jenkins.io/) with K8s agents                |
 | DNS & Reverse Proxy | [Cloudflare](https://www.cloudflare.com/), [Nginx Proxy Manager](https://nginxproxymanager.com/) |
 | Secrets Management  | [Vault](https://www.vaultproject.io/)                                             |
@@ -148,19 +148,19 @@ Since **Nginx Proxy Manager** lacks a usable API, I wrote a **custom Python scri
 
 I’ve developed and deployed several apps to showcase full-stack and DevOps skills. These are containerized, automatically deployed via Jenkins, and hosted on the `apphost` server.
 
-### 🧾 [Inventory App](#)  
+### 🧾 [Inventory App](/ansible/applications/inventory/)  
 A **Flask API** that returns VM metadata (VMID, name, IP) for all Proxmox VMs.  
 - Uses **PostgreSQL** to persist VM info  
 - Queries the Proxmox API for live data  
 - Deployed as a microservice and used for debugging/automation
 
-### 📅 [Man Utd Fixture App](#)  
+### 📅 [Man Utd Fixture App](/ansible/applications/united/)  
 Downloads and parses Manchester United’s fixture calendar file (.ics), stores it in PostgreSQL, and exposes a clean **REST API** using **Flask**.  
 - Python parser for `.ics` files  
-- Flask API with search/filter endpoints  
+- Flask API with search/filter endpoints
 - Deployed as a Docker container and updated via CI
 
-➡️ All apps run in Docker containers and are deployed to the **apphost** server via Jenkins pipelines.
+➡️ All apps run in Docker containers and are deployed to the **k8master** server via Jenkins pipelines.
 
 ---
 
