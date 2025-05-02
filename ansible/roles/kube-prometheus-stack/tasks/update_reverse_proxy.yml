@@ -11,19 +11,19 @@
     dest: '/home/{{ ansible_ssh_user }}/ansible'
   loop:
     - 'scripts/update_reverse_proxy.py'
-    - 'templates/nginix-conf.conf.j2'
+    - 'templates/ngnix-conf.conf.j2'
 
 - name: Create backup folder
   file:
-    path: '/home/{{ ansible_ssh_user }}/nginix/data/backup'
+    path: '/home/{{ ansible_ssh_user }}/ngnix/data/backup'
     state: directory
 
 - name: Create a database backup and make a copy to edit
   shell: |
-    sudo cp /home/{{ ansible_ssh_user }}/nginix/data/database.sqlite /home/{{ ansible_ssh_user }}/nginix/data/backup/database.sqlite.bkup
-    sudo cp /home/{{ ansible_ssh_user }}/nginix/data/database.sqlite /home/{{ ansible_ssh_user }}/ansible/database.sqlite
+    sudo cp /home/{{ ansible_ssh_user }}/ngnix/data/database.sqlite /home/{{ ansible_ssh_user }}/ngnix/data/backup/database.sqlite.bkup
+    sudo cp /home/{{ ansible_ssh_user }}/ngnix/data/database.sqlite /home/{{ ansible_ssh_user }}/ansible/database.sqlite
 
-- name: Run Python Script to update nginix
+- name: Run Python Script to update ngnix
   shell: |
     sudo python3 /home/{{ ansible_ssh_user }}/ansible/update_reverse_proxy.py -n {{ item.name }} -p {{ item.port }} -ip {{ item.ip }}
   loop:
@@ -34,15 +34,15 @@
       port: "{{ nodeport_graf.stdout }}"
       ip: "{{ k8master_ip }}"
 
-- name: Delete current database and copy over edited one and nginix config file
+- name: Delete current database and copy over edited one and ngnix config file
   shell: |
-    sudo rm /home/tamhid/nginix/data/database.sqlite
-    sudo cp /home/{{ ansible_ssh_user }}/ansible/database.sqlite /home/tamhid/nginix/data/database.sqlite
+    sudo rm /home/ubuntu/ngnix/data/database.sqlite
+    sudo cp /home/{{ ansible_ssh_user }}/ansible/database.sqlite /home/ubuntu/ngnix/data/database.sqlite
   become: yes
 
-- name: Restart nginix docker container
+- name: Restart ngnix docker container
   community.docker.docker_container:
-    name: "nginix_app_1"
+    name: "ngnix_app_1"
     restart: true
 
 - name: Clean Up leftover files on RP

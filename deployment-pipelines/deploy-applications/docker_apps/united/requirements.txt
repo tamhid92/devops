@@ -1,6 +1,0 @@
-wget
-icalendar
-psycopg2-binary
-flask
-hvac
-APScheduler

@@ -1,0 +1,52 @@
+---
+- name: Create directory for Vault
+  file:
+    path: /opt/vault
+    state: directory
+    mode: '0777'
+- name: Create directory for Vault configuration
+  file:
+    path: /opt/vault/config
+    state: directory
+    mode: '0777'
+- name: Create directory for Vault data
+  file:
+    path: /opt/vault/data
+    state: directory
+    mode: '0777'
+- name: Create directory for Vault logs
+  file:
+    path: /opt/vault/logs
+    state: directory
+    mode: '0777'
+- name: Copy Docker Compose file for Vault
+  copy:
+    src: "{{ playbook_dir }}/docker-compose/vault/docker-compose.yml"
+    dest: /opt/vault/docker-compose.yml
+    owner: root
+    group: root
+    mode: '0644'
+- name: Copy Vault configuration file
+  copy:
+    src: "{{ playbook_dir }}/docker-compose/vault/vault.hcl"
+    dest: /opt/vault/config/vault.hcl
+    owner: root
+    group: root
+    mode: '0644'
+- name: Copy Vault Docker Compose
+  copy:
+    src: files/vault/docker-compose.yml
+    dest: /opt/vault/docker-compose.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Start Vault with Docker Compose
+  command: docker-compose up -d
+  args:
+    chdir: /opt/vault
+
+- name: Ensure Vault is running
+  shell: docker ps | grep -q vault
+  register: vault_running
+  failed_when: vault_running.rc != 0
