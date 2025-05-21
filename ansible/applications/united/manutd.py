@@ -57,12 +57,13 @@ def next_game():
     REQUEST_COUNT.labels(method='GET').inc()
 
     today = datetime.today().strftime('%Y-%m-%d')
+    time_now = datetime.now().strftime('%H:%M:%S')
     conn = get_db_connection()
     if conn:
         cur = conn.cursor()
         SQLQuery = f"""
             SELECT * FROM match
-            WHERE date > '{today}'
+            WHERE date >= '{today}' AND time > '{time_now}'
             ORDER BY date
             LIMIT 1
         """
@@ -88,12 +89,13 @@ def remaining_game():
     REQUEST_COUNT.labels(method='GET').inc()
 
     today = datetime.today().strftime('%Y-%m-%d')
+    time_now = datetime.now().strftime('%H:%M:%S')
     conn = get_db_connection()
     if conn:
         cur = conn.cursor()
         SQLQuery = f"""
             SELECT * FROM match
-            WHERE date > '{today}'
+            WHERE date >= '{today}' AND time > '{time_now}'
             ORDER BY date
         """
         cur.execute(SQLQuery)
