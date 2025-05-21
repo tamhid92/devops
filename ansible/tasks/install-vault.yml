@@ -21,14 +21,14 @@
     mode: '0777'
 - name: Copy Docker Compose file for Vault
   copy:
-    src: "{{ playbook_dir }}/docker-compose/vault/docker-compose.yml"
+    src: "{{ playbook_dir }}/files/vault/docker-compose.yml"
     dest: /opt/vault/docker-compose.yml
     owner: root
     group: root
     mode: '0644'
 - name: Copy Vault configuration file
   copy:
-    src: "{{ playbook_dir }}/docker-compose/vault/vault.hcl"
+    src: "{{ playbook_dir }}/files/vault/vault.hcl"
     dest: /opt/vault/config/vault.hcl
     owner: root
     group: root

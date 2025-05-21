@@ -80,12 +80,6 @@
   changed_when: "'created' in weave_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'
 
-- name: Fix Kube admin permissions
-  command: |
-    mkdir -p $HOME/.kube
-    cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-    chown $(id -u):$(id -g) $HOME/.kube/config
-  become: yes
 
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.

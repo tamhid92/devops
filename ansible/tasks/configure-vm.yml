@@ -10,7 +10,7 @@
 
   - name: Copy Terraform Folder
     copy:
-      src: "../../{{ inventory_hostname }}/"
+      src: "../../k8-cluster/"
       dest: /home/TF_FILES/
       owner: ubuntu
       group: ubuntu

@@ -60,8 +60,8 @@ def get_db_connection():
     
     try:
         conn = psycopg2.connect(
-            host="192.168.68.62",
-            port=30727,
+            host="192.168.68.86",
+            port=32262,
             database="postgres",
             user=db_user,
             password=db_pass

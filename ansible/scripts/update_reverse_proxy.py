@@ -6,7 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--name", required=True, type=str)
 parser.add_argument("-p", "--port", required=True, type=int)
-parser.add_argument("-ip","--ipaddress", type=str, default="192.168.68.62")
+parser.add_argument("-ip","--ipaddress", type=str, default="192.168.68.86")
 
 args = parser.parse_args()
 app_name = args.name
@@ -66,7 +66,8 @@ def deploy_app():
         content = template.render({
             "app_name": app_name,
             "app_port": app_port,
-            "ip_addr": ip_address
+            "ip_addr": ip_address,
+            "id" : id_
         })
 
         config_file_path = os.path.join(NGNIX_FILE_PATH, f"{id_}.conf")

@@ -56,16 +56,16 @@
     delegate_to: 127.0.0.1
     tags: apply
 
-  - name: Remove VM from DB
-    ansible.builtin.uri:
-      url: "https://inventory.tchowdhury.org/vms/{{ vm_name }}"
-      method: DELETE
-    ignore_errors: true
-    delegate_to: 127.0.0.1
-    tags: destroy
+  # - name: Remove VM from DB
+  #   ansible.builtin.uri:
+  #     url: "https://inventory.tchowdhury.org/vms/{{ vm_name }}"
+  #     method: DELETE
+  #   ignore_errors: true
+  #   delegate_to: 127.0.0.1
+  #   tags: destroy
 
 - name: Configure VM Server
-  hosts: localhost
+  hosts: VM
   become: yes
   gather_facts: no
 
@@ -123,37 +123,44 @@
     reboot:
     tags: apply
   
-  - name: Create a VM folder
-    ansible.builtin.file:
-      path: "{{ playbook_dir }}/../{{ vm_name }}"
-      owner: "ubuntu"
-      group: "ubuntu"
-      mode: '0777'
-      state: directory
-    delegate_to: 127.0.0.1
-    tags: destroy
+  # - name: Create a VM folder
+  #   ansible.builtin.file:
+  #     path: "{{ playbook_dir }}/../{{ vm_name }}"
+  #     owner: "ubuntu"
+  #     group: "ubuntu"
+  #     mode: '0777'
+  #     state: directory
+  #   delegate_to: 127.0.0.1
+  #   tags: destroy
 
-  - name: Fetch TF State files
-    synchronize:
-      src: "/home/TF_FILES"
-      dest: "{{ playbook_dir }}/../{{ vm_name }}/"
-      mode: pull
-      owner: true
-    tags: destroy
+  # - name: Fetch TF State files
+  #   synchronize:
+  #     src: "/home/TF_FILES"
+  #     dest: "{{ playbook_dir }}/../{{ vm_name }}/"
+  #     mode: pull
+  #     owner: true
+  #   tags: destroy
 
-  - name: Terraform destroy
-    command:
-      chdir: "{{ playbook_dir }}/../{{ vm_name }}/TF_FILES/"
-      cmd: "terraform destroy -auto-approve -lock=false"
-    environment:
-      TF_VAR_proxmox_api_token_id: "{{ lookup('env', 'TF_VAR_proxmox_api_token_id') }}"
-      TF_VAR_proxmox_api_token_secret: "{{ lookup('env', 'TF_VAR_proxmox_api_token_secret') }}"
-    register: terraform_destroy
-    delegate_to: 127.0.0.1
-    tags: destroy
+  # - name: Terraform destroy
+  #   command:
+  #     chdir: "{{ playbook_dir }}/../{{ vm_name }}/TF_FILES"
+  #     cmd: "terraform destroy -auto-approve -lock=false"
+  #   environment:
+  #     TF_VAR_proxmox_api_token_id: "{{ lookup('env', 'TF_VAR_proxmox_api_token_id') }}"
+  #     TF_VAR_proxmox_api_token_secret: "{{ lookup('env', 'TF_VAR_proxmox_api_token_secret') }}"
+  #   register: terraform_destroy
+  #   delegate_to: 127.0.0.1
+  #   tags: destroy
 
-  - name: Terraform apply output
-    debug:
-      msg: "{{ terraform_destroy }}"
-    delegate_to: 127.0.0.1
+  # - name: Terraform apply output
+  #   debug:
+  #     msg: "{{ terraform_destroy }}"
+  #   delegate_to: 127.0.0.1
+  #   tags: destroy
+
+  - name: Destroy VM
+    import_tasks: tasks/terraform-destroy.yml
     tags: destroy
+    vars:
+      host_ip: "{{ hostvars.pve.vm_ip.stdout }}"
+      vm_names: "{{ vm_name }}"

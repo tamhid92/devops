@@ -34,8 +34,8 @@ def get_db_connection():
 
     try:
         conn = psycopg2.connect(
-            host="192.168.68.62",
-            port=30727,
+            host="192.168.68.86",
+            port=32262,
             database="postgres",
             user=uname,
             password=pwrd
@@ -136,7 +136,7 @@ def populateFixtures():
                 if component.name == "VEVENT":
                     description = component.decoded("description")
                     datetime_obj = component.decoded("dtstart")
-                    cst_localtime = (datetime_obj - timedelta(hours=6))
+                    cst_localtime = (datetime_obj - timedelta(hours=5))
                     game = description.decode("utf-8").split('-')[0]
 
                     hometeam = description.decode("utf-8").split('-')[0].split(' v ')[0].strip()
@@ -211,7 +211,7 @@ def schedule_weekly_update():
 
 def main():
     conn = get_db_connection()
-    # populateDB(conn)
+    populateDB(conn)
     schedule_weekly_update()
 
 if __name__ == '__main__':

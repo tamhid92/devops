@@ -2,7 +2,7 @@
 - name: Deploy Application
   hosts: k8master
   vars:
-    - rp: 192.168.68.81
+    rp: 192.168.68.77
 
   tasks:
   # sanity check
@@ -11,6 +11,15 @@
       timeout: 5
     delegate_to: 127.0.0.1
     tags: remove
+  
+  - name: Deploy Postgres
+    import_tasks: tasks/deploy-postgres.yml
+    when: app_name == 'postgres'
+
+  - name: Install Vault
+    import_tasks: tasks/install-vault.yml
+    become: yes
+    when: app_name == 'vault'
 
   - name: Create ansible folder
     file:
@@ -46,7 +55,7 @@
       state: started
       restart_policy: always
       ports:
-        - "{{ app_port }}:{{ app_port }}"
+        - "6000:6000"
       detach: true
       env:
         VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
@@ -56,13 +65,15 @@
     community.hashi_vault.vault_kv2_get:
       url: "{{ lookup('env', 'VAULT_ADDR') }}"
       engine_mount_point: secret
-      path: cloudflare_api_token
+      path: "cloudflare_api_token"
       auth_method: token
     environment:
       VAULT_TOKEN: "{{ lookup('env', 'VAULT_TOKEN') }}"
     register: response
     delegate_to: 127.0.0.1
-    tags: always
+    tags:
+      - run
+      - remove
 
   - name: Create a record using api token
     community.general.cloudflare_dns:
@@ -76,6 +87,14 @@
     no_log: true
     tags: run
 
+  - name: Clean Up leftover files on K8s Master
+    ansible.builtin.file:
+      state: absent
+      path: /home/{{ ansible_ssh_user }}/ansible/
+    tags:
+      - run
+      - remove
+  
   - name: Delete the record
     community.general.cloudflare_dns:
       zone: tchowdhury.org
@@ -125,11 +144,15 @@
     file:
       path: '/home/ubuntu/ngnix/data/backup'
       state: directory
-    tags: always
+    tags: 
+      - run
+      - remove
   - name: Create a database backup and make a copy to edit
     shell: |
       sudo cp /home/ubuntu/ngnix/data/database.sqlite /home/ubuntu/ngnix/data/backup/database.sqlite.bkup
-    tags: always
+    tags: 
+      - run
+      - remove
   - name: Make a DB copy to edit
     shell: |
       sudo cp /home/ubuntu/ngnix/data/database.sqlite /home/{{ ansible_ssh_user }}/ansible/database.sqlite
@@ -173,12 +196,16 @@
 
   - name: Restart ngnix docker container
     community.docker.docker_container:
-      name: "ngnix_app_1"
+      name: "ngnix-app-1"
       restart: true
-    tags: always
+    tags:
+      - run
+      - remove
 
   - name: Clean Up leftover files on RP
     ansible.builtin.file:
       state: absent
       path: /home/ubuntu/ansible/
-    tags: always
+    tags:
+      - run
+      - remove

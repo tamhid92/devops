@@ -75,3 +75,19 @@
 
 - include_tasks: node-setup.yml
   when: kubernetes_role == 'node'
+
+- name: "Creating .kube directory"
+  shell: "mkdir -p $HOME/.kube"
+  become_user: ubuntu
+  when: kubernetes_role == 'control_plane'
+
+- name: "Copying /etc/kubernetes/admin.conf $HOME/.kube/config"
+  shell: "sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config"
+  become_user: ubuntu
+  when: kubernetes_role == 'control_plane'
+  ignore_errors: true
+
+- name: "changing owner permission"
+  shell: "sudo chown $(id -u):$(id -g) $HOME/.kube/config"
+  become_user: ubuntu
+  when: kubernetes_role == 'control_plane'

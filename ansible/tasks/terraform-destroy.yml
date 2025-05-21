@@ -1,0 +1,31 @@
+# - name: Create a VM folder
+#   ansible.builtin.file:
+#     path: "{{ playbook_dir }}/../{{ vm_name }}"
+#     owner: "ubuntu"
+#     group: "ubuntu"
+#     mode: '0777'
+#     state: directory
+#   delegate_to: localhost
+#   tags: destroy
+
+# - name: Fetch TF State files
+#   synchronize:
+#     src: "/home/TF_FILES"
+#     dest: "{{ playbook_dir }}/../{{ vm_name }}/"
+#     mode: pull
+#     owner: true
+
+- name: Terraform destroy
+  command:
+    chdir: "{{ playbook_dir }}/../{{ vm_name }}/TF_FILES"
+    cmd: "terraform destroy -auto-approve -lock=false"
+  environment:
+    TF_VAR_proxmox_api_token_id: "{{ lookup('env', 'TF_VAR_proxmox_api_token_id') }}"
+    TF_VAR_proxmox_api_token_secret: "{{ lookup('env', 'TF_VAR_proxmox_api_token_secret') }}"
+  register: terraform_destroy
+  delegate_to: localhost
+
+- name: Terraform destroy output 
+  debug:
+    msg: "{{ terraform_destroy }}"
+  delegate_to: localhost
