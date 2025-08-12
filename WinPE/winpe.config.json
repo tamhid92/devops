@@ -2,10 +2,8 @@
   "projectRoot": "C:\\WinPE_Project",
   "architecture": "amd64",
 
-  "drivers": {
-    "folders": [
-    ]
-  },
+  "drivers": [
+  ],
 
   "packages": [
     "WinPE-Scripting.cab",
