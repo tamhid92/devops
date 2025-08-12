@@ -3,13 +3,13 @@
   - Creates WinPE working directory (copype)
   - Mounts boot.wim
   - Injects drivers
-  - Adds WinPE Optional Components (packages)
+  - Adds WinPE packages
   - Copies custom scripts & 3rd-party apps
   - Customizes startnet.cmd
   - Builds ISO or USB
 
 .PARAMETER Config
-  Path to JSON configuration (see example below).
+  Path to JSON configuration.
 
 .NOTES
   Run as Administrator.
