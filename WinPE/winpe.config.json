@@ -1,0 +1,35 @@
+{
+  "projectRoot": "C:\\WinPE_Project",
+  "architecture": "amd64",
+
+  "drivers": {
+    "folders": [
+    ]
+  },
+
+  "packages": [
+    "WinPE-Scripting.cab",
+    "WinPE-NetFx.cab",
+    "WinPE-PowerShell.cab"
+  ],
+
+  "copyScripts": [
+  ],
+
+  "apps": [
+    {
+        "Source":"C:\\WinPE_assets\\apps\\putty",
+        "Dest":"\\Apps"
+    }
+  ],
+
+  "startnet": [
+    "powershell"
+  ],
+
+  "output": {
+    "type": "iso",
+    "isoPath": "C:\\WinPE_Project\\Output\\WinPE_amd64.iso",
+    "usbDriveLetter": "K"
+  }
+}
